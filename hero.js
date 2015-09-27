@@ -38,7 +38,8 @@ Hero.prototype.create= function() {
 
 
 Hero.prototype.update = function(platforms) {
-  game.physics.arcade.collide(this.sprite, platforms);
+  game.physics.arcade.collide(this, platforms);
+  game.physics.arcade.collide
   this.move()
 }
 
