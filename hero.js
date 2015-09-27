@@ -23,7 +23,7 @@ Comet = function(game){
   this.lasers.enableBody = true;
   //  Our two animations, walking left and right
   this.wasd.up.onDown.add(jumpCheck)
-  this.cursors.up.onDown.add(jumpCheck)
+//  this.cursors.up.onDown.add(jumpCheck)
   this.space.onDown.add(shoot)
   this.animations.add('left', [0, 1, 2, 3], 10, true);
   this.animations.add('right', [5, 6, 7, 8], 10, true);
@@ -73,7 +73,7 @@ Comet.prototype.move = function() {
     sprint = 2
   }
 
-  if (this.cursors.left.isDown || this.wasd.left.isDown)
+  if (/*this.cursors.left.isDown ||*/ this.wasd.left.isDown)
   {
       //  Move to the left
       this.direction = 1
@@ -84,7 +84,7 @@ Comet.prototype.move = function() {
         this.frame = 1;
       }
   }
-  else if (this.cursors.right.isDown || this.wasd.right.isDown)
+  else if (/*this.cursors.right.isDown ||*/ this.wasd.right.isDown)
   {
       //  Move to the right
       this.direction = 0
@@ -104,7 +104,7 @@ Comet.prototype.move = function() {
       }
   }
 
-  if ((this.cursors.up.isDown || this.wasd.up.isDown) && this.numJumps < this.MAX_JUMPS) {
+  if ((/*this.cursors.up.isDown || */this.wasd.up.isDown) && this.numJumps < this.MAX_JUMPS) {
 
   }
   //  Allow the player to jump if they are touching the ground.

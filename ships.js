@@ -16,7 +16,6 @@ function Ships(game) {
 }
 
 Ships.prototype.create = function() {
-
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.ships = game.add.group();
     this.ships.enableBody = true;
@@ -36,6 +35,7 @@ Ships.prototype.create = function() {
         ship.facingLeft = true;
         ship.userControlled = false;
         ship.inputEnabled = true;
+        ship.body.immovable = true;
 
         ship.events.onInputDown.add(function(ship, pointer) {
 

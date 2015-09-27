@@ -5,6 +5,7 @@
     <title>Phaser - Making your first game, part 9</title>
   <script src="//cdn.jsdelivr.net/phaser/2.4.3/phaser.js"></script>
   <script type="text/javascript" src="hero.js"></script>
+  <script type="text/javascript" src="ships.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -19,7 +20,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload,
                           create: create, update: update });
 
 function preload() {
-    //game.load.image("ship", "assets/ship.png");
+    game.load.image("ship", "assets/ship.png");
     game.load.image('sky', 'assets/space.jpg');
     game.load.image('ground', 'assets/metal_platform.png');
     game.load.image('laser', 'assets/laser.png');
@@ -29,6 +30,7 @@ function preload() {
 var player;
 var platforms;
 var cursors;
+var ships;
 
 var score = 0;
 var scoreText;
@@ -83,15 +85,19 @@ function create() {
 
     // The player and its settings
     player = new Comet(game);
-
     this.game.camera.follow(player);
+
+    ships = new Ships(game);
+    ships.create();
+
     //  Our controls.
 }
 
 function update() {
     game.physics.arcade.collide(player, platforms);
-    player.update()
-
+    game.physics.arcade.collide(player, ships.ships);
+    player.update();
+    ships.update();
 }
 
 
