@@ -1,7 +1,7 @@
 Comet = function(game){
   Phaser.Sprite.call(this, game, 32, game.world.height - 150, 'dude');
   game.add.existing(this);
-
+  this.anchor.setTo(.5,.5);
   this.game = game
   this.game.physics.arcade.enable(this);
   this.numJumps = 0;
@@ -25,8 +25,7 @@ Comet = function(game){
   this.wasd.up.onDown.add(jumpCheck)
 //  this.cursors.up.onDown.add(jumpCheck)
   this.space.onDown.add(shoot)
-  this.animations.add('left', [0, 1, 2, 3], 10, true);
-  this.animations.add('right', [5, 6, 7, 8], 10, true);
+  this.animations.add('walk', [4, 5, 6, 7], 10, true);
 }
 
 Comet.prototype = Object.create(Phaser.Sprite.prototype)
@@ -77,9 +76,10 @@ Comet.prototype.move = function() {
   {
       //  Move to the left
       this.direction = 1
+      yourSprite.scale.x *= -1;
       this.body.velocity.x = -150 * sprint;
       if(this.body.touching.down) {
-        this.animations.play('left');
+        this.animations.play('walk');
       } else {
         this.frame = 1;
       }
@@ -90,17 +90,16 @@ Comet.prototype.move = function() {
       this.direction = 0
       this.body.velocity.x = 150 * sprint;
       if(this.body.touching.down) {
-        this.animations.play('right');
+        this.animations.play('walk');
       } else {
         this.frame = 6;
       }
   }
   else
   {
-      if(this.direction == 0) {
-        this.frame = 5;
-      } else {
-        this.frame = 0;
+      this.frame = 8;
+      if(this.direction == 1) {
+        yourSprite.scale.x *= -1;
       }
   }
 
