@@ -1,7 +1,10 @@
-function Hero(game){
-  this.game = game;
-  this.sprite = null;
-  this.numJumps=0;
+Comet = function(game){
+  Phaser.Sprite.call(this, game, 32, game.world.height - 150, 'dude');
+  game.add.existing(this);
+
+  this.game = game
+  this.game.physics.arcade.enable(this);
+  this.numJumps = 0;
   this.direction = 0
   this.cursors = game.input.keyboard.createCursorKeys();
   this.MAX_JUMPS = 2;
@@ -13,32 +16,24 @@ function Hero(game){
     left: game.input.keyboard.addKey(Phaser.Keyboard.A),
     right: game.input.keyboard.addKey(Phaser.Keyboard.D)
   };
-  game.input.keyboard.onPressCallback
-
-}
-
-Hero.prototype.create= function() {
-  this.sprite = game.add.sprite(32, game.world.height - 150, 'dude');
-  this.game.physics.arcade.enable(this.sprite);
-
-  //  Player physics properties. Give the little guy a slight bounce.
-  this.sprite.body.bounce.y = 0;
-  this.sprite.body.gravity.y = 500;
-  this.sprite.body.collideWorldBounds = true;
+  this.body.bounce.y = 0;
+  this.body.gravity.y = 500;
+  this.body.collideWorldBounds = true;
   this.lasers = game.add.group();
   this.lasers.enableBody = true;
-  //  Our two animations, walking left and right.
-  this.sprite.animations.add('left', [0, 1, 2, 3], 10, true);
-  this.sprite.animations.add('right', [5, 6, 7, 8], 10, true);
+  //  Our two animations, walking left and right
   this.wasd.up.onDown.add(jumpCheck)
   this.cursors.up.onDown.add(jumpCheck)
   this.space.onDown.add(shoot)
-
+  this.animations.add('left', [0, 1, 2, 3], 10, true);
+  this.animations.add('right', [5, 6, 7, 8], 10, true);
 }
 
+Comet.prototype = Object.create(Phaser.Sprite.prototype)
+Comet.prototype.constructor = Comet;
 
-Hero.prototype.update = function(platforms) {
-  game.physics.arcade.collide(this.sprite, platforms);
+
+Comet.prototype.update = function() {
   this.move()
 }
 
@@ -50,9 +45,10 @@ shoot = function() {
   player.shoot()
 }
 
-Hero.prototype.shoot = function() {
-  x = this.direction ? this.sprite.position.x - (this.sprite.width/2) : this.sprite.position.x + (this.sprite.width/2)
-  y = this.sprite.position.y + (this.sprite.height/2)
+
+Comet.prototype.shoot = function() {
+  x = this.direction ? this.position.x - (this.width/2) : this.position.x + (this.width/2)
+  y = this.position.y + (this.height/2)
   laser = this.lasers.create(x, y, 'laser');
   if(this.direction == 0) {
     laser.body.velocity.x = 800
@@ -61,15 +57,15 @@ Hero.prototype.shoot = function() {
   }
 }
 
-Hero.prototype.jump = function() {
+Comet.prototype.jump = function() {
   if(this.numJumps < this.MAX_JUMPS) {
-    this.sprite.body.velocity.y = -300;
+    this.body.velocity.y = -300;
   }
   this.numJumps++;
 }
 
-Hero.prototype.move = function() {
-  this.sprite.body.velocity.x = 0;
+Comet.prototype.move = function() {
+  this.body.velocity.x = 0;
 
   sprint = 1
 
@@ -81,35 +77,38 @@ Hero.prototype.move = function() {
   {
       //  Move to the left
       this.direction = 1
-      this.sprite.body.velocity.x = -150 * sprint;
-      if(this.sprite.body.touching.down) {
-        this.sprite.animations.play('left');
+      this.body.velocity.x = -150 * sprint;
+      if(this.body.touching.down) {
+        this.animations.play('left');
       } else {
-        this.sprite.frame = 1;
+        this.frame = 1;
       }
   }
   else if (this.cursors.right.isDown || this.wasd.right.isDown)
   {
       //  Move to the right
       this.direction = 0
-      this.sprite.body.velocity.x = 150 * sprint;
-      if(this.sprite.body.touching.down) {
-        this.sprite.animations.play('right');
+      this.body.velocity.x = 150 * sprint;
+      if(this.body.touching.down) {
+        this.animations.play('right');
       } else {
-        this.sprite.frame = 6;
+        this.frame = 6;
       }
   }
   else
   {
-      //  Stand still
-      this.sprite.frame = 4;
+      if(this.direction == 0) {
+        this.frame = 5;
+      } else {
+        this.frame = 0;
+      }
   }
 
   if ((this.cursors.up.isDown || this.wasd.up.isDown) && this.numJumps < this.MAX_JUMPS) {
 
   }
   //  Allow the player to jump if they are touching the ground.
-  if (this.sprite.body.touching.down)
+  if (this.body.touching.down)
   {
     this.numJumps = 0
   }

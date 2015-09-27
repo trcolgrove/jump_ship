@@ -15,9 +15,11 @@
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload,
+                          create: create, update: update });
 
 function preload() {
+    //game.load.image("ship", "assets/ship.png");
     game.load.image('sky', 'assets/space.jpg');
     game.load.image('ground', 'assets/metal_platform.png');
     game.load.image('laser', 'assets/laser.png');
@@ -35,9 +37,10 @@ function create() {
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    game.world.setBounds(0,0,100000,game.world.height);
     //  A simple background for our game
     game.add.sprite(0, 0, 'sky');
+
 
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
@@ -49,7 +52,7 @@ function create() {
     var ground = platforms.create(0, game.world.height - 64, 'ground');
 
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    ground.scale.setTo(2, 2);
+    ground.scale.setTo(2, 50);
 
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
@@ -61,18 +64,36 @@ function create() {
     ledge = platforms.create(-150, 250, 'ground');
     ledge.body.immovable = true;
 
-    // The player and its settings
-    player = new Hero(game);
-    player.create();
+    ledge = platforms.create(-150, 250, 'ground');
+    ledge.body.immovable = true;
+
 
     //  Our controls.
+    ledge = platforms.create(800, 300, 'ground');
+    ledge.body.immovable = true;
 
+    ledge = platforms.create(1500, 300, 'ground');
+    ledge.body.immovable = true;
 
+    ledge = platforms.create(2300, 200, 'ground');
+    ledge.body.immovable = true;
+
+    ledge = platforms.create(2800, 500, 'ground');
+    ledge.body.immovable = true;
+
+    // The player and its settings
+    player = new Comet(game);
+
+    this.game.camera.follow(player);
+    //  Our controls.
 }
 
 function update() {
-    player.update(platforms)
+    game.physics.arcade.collide(player, platforms);
+    player.update()
+
 }
+
 
 
 </script>
