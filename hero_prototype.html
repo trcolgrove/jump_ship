@@ -24,7 +24,7 @@ function preload() {
     game.load.image('sky', 'assets/space.jpg');
     game.load.image('ground', 'assets/metal_platform.png');
     game.load.image('laser', 'assets/laser.png');
-    game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 32, 48);
+    game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 61, 86.25);
 }
 
 var player;
@@ -85,6 +85,7 @@ function create() {
 
     // The player and its settings
     player = new Comet(game);
+    player.scale.set(.75,.75)
     this.game.camera.follow(player);
 
     ships = new Ships(game);
@@ -94,6 +95,7 @@ function create() {
 }
 
 function update() {
+    //Qgame.debug.body(player);
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(player, ships.ships);
     player.update();

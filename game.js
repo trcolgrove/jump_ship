@@ -8,7 +8,6 @@ var game = new Phaser.Game(boundsWidth, boundsHeight, Phaser.AUTO, "",
 
 function preload() {
     game.load.image("ship", "assets/ship.png");
-    game.load.image("ship", "assets/ship.png");
     game.load.image("laser", "assets/laser.png");
 }
 

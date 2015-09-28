@@ -1,9 +1,11 @@
 Comet = function(game){
   Phaser.Sprite.call(this, game, 32, game.world.height - 150, 'dude');
   game.add.existing(this);
-  this.anchor.setTo(.5,.5);
   this.game = game
   this.game.physics.arcade.enable(this);
+  this.body.setSize(this.width - 45, this.height, -10, 0)
+  this.anchor.setTo(.5, .5);
+
   this.numJumps = 0;
   this.direction = 0
   this.cursors = game.input.keyboard.createCursorKeys();
@@ -46,13 +48,15 @@ shoot = function() {
 
 
 Comet.prototype.shoot = function() {
-  x = this.direction ? this.position.x - (this.width/2) : this.position.x + (this.width/2)
-  y = this.position.y + (this.height/2)
+  x = this.position.x;
+  y = this.position.y - (this.height/2.7);
   laser = this.lasers.create(x, y, 'laser');
+  laser.scale.set(.75,.75)
   if(this.direction == 0) {
-    laser.body.velocity.x = 800
+    laser.body.velocity.x = 800;
   } else if(this.direction == 1) {
-    laser.body.velocity.x = -800
+    laser.body.velocity.x = -800;
+    laser.scale.x *= -1;
   }
 }
 
@@ -65,7 +69,6 @@ Comet.prototype.jump = function() {
 
 Comet.prototype.move = function() {
   this.body.velocity.x = 0;
-
   sprint = 1
 
   if(this.shift.isDown) {
@@ -75,31 +78,39 @@ Comet.prototype.move = function() {
   if (/*this.cursors.left.isDown ||*/ this.wasd.left.isDown)
   {
       //  Move to the left
+      if(this.direction == 0) {
+        this.body.offset.x = 10
+        this.scale.x *= -1;
+      }
       this.direction = 1
-      yourSprite.scale.x *= -1;
       this.body.velocity.x = -150 * sprint;
       if(this.body.touching.down) {
         this.animations.play('walk');
       } else {
-        this.frame = 1;
+        this.frame = 5;
       }
   }
   else if (/*this.cursors.right.isDown ||*/ this.wasd.right.isDown)
   {
+      this.body.offset.x = -10 
+
       //  Move to the right
+      if(this.direction == 1) {
+        this.scale.x *= -1;
+      }
       this.direction = 0
       this.body.velocity.x = 150 * sprint;
       if(this.body.touching.down) {
         this.animations.play('walk');
       } else {
-        this.frame = 6;
+        this.frame = 5;
       }
   }
   else
   {
-      this.frame = 8;
+      this.frame = 4;
       if(this.direction == 1) {
-        yourSprite.scale.x *= -1;
+        this.scale.x *= -1;
       }
   }
 
