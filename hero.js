@@ -1,7 +1,6 @@
 Comet = function(game){
   Phaser.Sprite.call(this, game, 32, game.world.height - 150, 'dude');
-  game.add.existing(this);
-  this.game = game
+  this.game = game;
   this.game.physics.arcade.enable(this);
   this.body.setSize(this.width - 45, this.height, -10, 0)
   this.anchor.setTo(.5, .5);
@@ -10,8 +9,9 @@ Comet = function(game){
   this.direction = 0
   this.cursors = game.input.keyboard.createCursorKeys();
   this.MAX_JUMPS = 2;
-  this.shift = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
-  this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+  this.shift = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+  this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  this.j_key = game.input.keyboard.addKey(Phaser.Keyboard.J);
   this.wasd = {
     up: game.input.keyboard.addKey(Phaser.Keyboard.W),
     down: game.input.keyboard.addKey(Phaser.Keyboard.S),
@@ -28,6 +28,7 @@ Comet = function(game){
 //  this.cursors.up.onDown.add(jumpCheck)
   this.space.onDown.add(shoot)
   this.animations.add('walk', [4, 5, 6, 7], 10, true);
+  this.ship = null;
 }
 
 Comet.prototype = Object.create(Phaser.Sprite.prototype)
@@ -35,7 +36,11 @@ Comet.prototype.constructor = Comet;
 
 
 Comet.prototype.update = function() {
-  this.move()
+  if(this.ship != null) {
+    this.ship.move();
+  } else {
+    this.move()
+  }
 }
 
 jumpCheck = function() {
@@ -48,16 +53,21 @@ shoot = function() {
 
 
 Comet.prototype.shoot = function() {
-  x = this.position.x;
-  y = this.position.y - (this.height/2.7);
-  laser = this.lasers.create(x, y, 'laser');
-  laser.scale.set(.75,.75)
-  if(this.direction == 0) {
-    laser.body.velocity.x = 800;
-  } else if(this.direction == 1) {
-    laser.body.velocity.x = -800;
-    laser.scale.x *= -1;
+  if(this.ship != null) {
+      this.ship.shoot();
+  } else {
+      x = this.position.x;
+      y = this.position.y - (this.height/2.7);
+      laser = this.lasers.create(x, y, 'laser');
+      laser.scale.set(.75,.75)
+      if(this.direction == 0) {
+        laser.body.velocity.x = 800;
+      } else if(this.direction == 1) {
+        laser.body.velocity.x = -800;
+        laser.scale.x *= -1;
+      }
   }
+
 }
 
 Comet.prototype.jump = function() {
@@ -67,7 +77,30 @@ Comet.prototype.jump = function() {
   this.numJumps++;
 }
 
+Comet.prototype.swapControl = function(ship) {
+    if(this.ship == null) {
+        this.ship = ship;
+        this.body.collideWorldBounds = false;
+        this.y = -2000;
+        this.body.gravity.y = 0;
+        this.body.velocity.y = 0;
+        this.body.velocity.x = 0;
+    } else {
+        console.log(this);
+        this.body.collideWorldBounds = false;
+        this.body.gravity.y = 500;
+        var x = this.ship.x;
+        var y = this.ship.y - 50;
+        this.ship = null;
+        this.x = x;
+        this.y = y;
+        this.game.camera.follow(this);
+        //this.body.gravity.y = 500;
+    }
+}
+
 Comet.prototype.move = function() {
+
   this.body.velocity.x = 0;
   sprint = 1
 
@@ -92,7 +125,7 @@ Comet.prototype.move = function() {
   }
   else if (/*this.cursors.right.isDown ||*/ this.wasd.right.isDown)
   {
-      this.body.offset.x = -10 
+      this.body.offset.x = -10
 
       //  Move to the right
       if(this.direction == 1) {

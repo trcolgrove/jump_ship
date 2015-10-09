@@ -6,6 +6,7 @@
   <script src="//cdn.jsdelivr.net/phaser/2.4.3/phaser.js"></script>
   <script type="text/javascript" src="hero.js"></script>
   <script type="text/javascript" src="ships.js"></script>
+  <script type="text/javascript" src="ship.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -18,20 +19,22 @@
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload,
                           create: create, update: update });
-
+var audio;
 function preload() {
     game.load.image("ship", "assets/ship.png");
     game.load.image('sky', 'assets/space.jpg');
     game.load.image('ground', 'assets/metal_platform.png');
     game.load.image('laser', 'assets/laser.png');
     game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 61, 86.25);
+    game.load.audio('ultra', ['assets/ultraa.mp3']);
 }
 
 var player;
 var platforms;
 var cursors;
 var ships;
-
+var hijackShip = null;
+var collidingShip = null;
 var score = 0;
 var scoreText;
 
@@ -39,13 +42,15 @@ function create() {
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.world.setBounds(0,0,100000,game.world.height);
+    game.world.setBounds(0, 0, 100000, game.world.height);
     //  A simple background for our game
     game.add.sprite(0, 0, 'sky');
 
-
+    music = game.add.audio('ultra');
+    music.play();
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
+    ships = game.add.group();
 
     //  We will enable physics for any object that is created in this group
     platforms.enableBody = true;
@@ -85,20 +90,38 @@ function create() {
 
     // The player and its settings
     player = new Comet(game);
-    player.scale.set(.75,.75)
-    this.game.camera.follow(player);
+    game.add.existing(player);
+    player.scale.set(.75,.75);
+    game.camera.follow(player);
 
-    ships = new Ships(game);
-    ships.create();
-
+    shipFactory = new Ships(game);
+    shipFactory.create();
     //  Our controls.
+
+    this.j_key = game.input.keyboard.addKey(Phaser.Keyboard.J);
+
+    this.j_key.onDown.add(function() {
+
+        if(collidingShip != null) {
+            hijackShip = collidingShip;
+            player.swapControl(hijackShip);
+            hijackShip.swapControl();
+        } else {
+            player.ship.swapControl(hijackShip);
+            player.swapControl(hijackShip);
+            hijackShip = null;
+        }
+    });
 }
 
 function update() {
-    //Qgame.debug.body(player);
+    collidingShip = null;
+    this.game.physics.arcade.collide(player, ships, function(p, ship){
+        collidingShip = ship;
+    }, null, player);
     game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(player, ships.ships);
     player.update();
+    shipFactory.update();
     ships.update();
 }
 
