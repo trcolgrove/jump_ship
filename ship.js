@@ -40,13 +40,11 @@ Ship.prototype.constructor = Ship;
 
 Ship.prototype.swapControl = function() {
     if (this.userControlled) {
-        console.log("aaaaaa");
         this.userControlled = false;
         this.body.gravity.y = 500;
     } else {
         this.userControlled = true;
         this.body.velocity.x = 0;
-        game.camera.unfollow(player);
         this.scale.x *= -1;
         this.game.camera.follow(this);
     }

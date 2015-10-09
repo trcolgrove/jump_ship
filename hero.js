@@ -85,8 +85,8 @@ Comet.prototype.swapControl = function(ship) {
         this.body.gravity.y = 0;
         this.body.velocity.y = 0;
         this.body.velocity.x = 0;
+        this.game.camera.unfollow(this);
     } else {
-        console.log(this);
         this.body.collideWorldBounds = false;
         this.body.gravity.y = 500;
         var x = this.ship.x;
@@ -95,7 +95,6 @@ Comet.prototype.swapControl = function(ship) {
         this.x = x;
         this.y = y;
         this.game.camera.follow(this);
-        //this.body.gravity.y = 500;
     }
 }
 
