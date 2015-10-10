@@ -1,4 +1,5 @@
-Comet = function(game){
+Comet = function(game) {
+    
   Phaser.Sprite.call(this, game, 32, game.world.height - 150, 'dude');
   this.game = game;
   this.game.physics.arcade.enable(this);

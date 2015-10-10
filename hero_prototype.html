@@ -25,8 +25,10 @@ function preload() {
     game.load.image('sky', 'assets/space.jpg');
     game.load.image('ground', 'assets/metal_platform.png');
     game.load.image('laser', 'assets/laser.png');
+    game.load.image('gameTiles', 'assets/space_texture.png');
     game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 61, 86.25);
     game.load.audio('ultra', ['assets/ultraa.mp3']);
+    game.load.tilemap('level1', 'assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
 }
 
 var player;
@@ -42,9 +44,8 @@ function create() {
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.world.setBounds(0, 0, 100000, game.world.height);
+    game.world.setBounds(0, 0, 2000, game.world.height);
     //  A simple background for our game
-    game.add.sprite(0, 0, 'sky');
 
     music = game.add.audio('ultra');
     music.play();
@@ -52,9 +53,15 @@ function create() {
     platforms = game.add.group();
     ships = game.add.group();
 
+    map = game.add.tilemap('level1');
+    map.addTilesetImage('Spaceship_Texture','gameTiles');
+    blockedLayer = map.createLayer('blockedLayer');
+    map.setCollisionBetween(1, 100000, true, 'blockedLayer');
     //  We will enable physics for any object that is created in this group
     platforms.enableBody = true;
 
+
+/*
     // Here we create the ground.
     var ground = platforms.create(0, game.world.height - 64, 'ground');
 
@@ -63,6 +70,7 @@ function create() {
 
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
+
 
     //  Now let's create two ledges
     var ledge = platforms.create(400, 400, 'ground');
@@ -88,6 +96,7 @@ function create() {
     ledge = platforms.create(2800, 500, 'ground');
     ledge.body.immovable = true;
 
+*/
     // The player and its settings
     player = new Comet(game);
     game.add.existing(player);
@@ -120,6 +129,7 @@ function update() {
         collidingShip = ship;
     }, null, player);
     game.physics.arcade.collide(player, platforms);
+    game.physics.arcade.collide(player, blockedLayer);
     player.update();
     shipFactory.update();
     ships.update();
