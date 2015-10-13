@@ -40,7 +40,7 @@ Comet.prototype.update = function() {
   if(this.ship != null) {
     this.ship.move();
   } else {
-    this.move()
+    this.move();
   }
 }
 

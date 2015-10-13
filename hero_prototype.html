@@ -56,7 +56,7 @@ function create() {
     map = game.add.tilemap('level1');
     map.addTilesetImage('Spaceship_Texture','gameTiles');
     blockedLayer = map.createLayer('blockedLayer');
-    map.setCollisionBetween(1, 100000, true, 'blockedLayer');
+    map.setCollisionBetween(1, 200, true, 'blockedLayer');
 
     //  We will enable physics for any object that is created in this group
     blockedLayer.enableBody = true;
