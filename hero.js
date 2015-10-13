@@ -1,6 +1,6 @@
 Comet = function(game) {
-    
-  Phaser.Sprite.call(this, game, 32, game.world.height - 150, 'dude');
+
+  Phaser.Sprite.call(this, game, 32, game.world.height - 600, 'dude');
   this.game = game;
   this.game.physics.arcade.enable(this);
   this.body.setSize(this.width - 45, this.height, -10, 0)
@@ -21,7 +21,7 @@ Comet = function(game) {
   };
   this.body.bounce.y = 0;
   this.body.gravity.y = 500;
-  this.body.collideWorldBounds = true;
+  this.body.collideWorldBounds = false;
   this.lasers = game.add.group();
   this.lasers.enableBody = true;
   //  Our two animations, walking left and right
@@ -81,14 +81,12 @@ Comet.prototype.jump = function() {
 Comet.prototype.swapControl = function(ship) {
     if(this.ship == null) {
         this.ship = ship;
-        this.body.collideWorldBounds = false;
         this.y = -2000;
         this.body.gravity.y = 0;
         this.body.velocity.y = 0;
         this.body.velocity.x = 0;
         this.game.camera.unfollow(this);
     } else {
-        this.body.collideWorldBounds = false;
         this.body.gravity.y = 500;
         var x = this.ship.x;
         var y = this.ship.y - 50;
@@ -117,7 +115,7 @@ Comet.prototype.move = function() {
       }
       this.direction = 1
       this.body.velocity.x = -150 * sprint;
-      if(this.body.touching.down) {
+      if(this.body.touching.down ||  this.body.blocked.down) {
         this.animations.play('walk');
       } else {
         this.frame = 5;
@@ -133,7 +131,7 @@ Comet.prototype.move = function() {
       }
       this.direction = 0
       this.body.velocity.x = 150 * sprint;
-      if(this.body.touching.down) {
+      if(this.body.touching.down || this.body.blocked.down) {
         this.animations.play('walk');
       } else {
         this.frame = 5;
@@ -148,12 +146,12 @@ Comet.prototype.move = function() {
   }
 
   if ((/*this.cursors.up.isDown || */this.wasd.up.isDown) && this.numJumps < this.MAX_JUMPS) {
-
   }
   //  Allow the player to jump if they are touching the ground.
-  if (this.body.touching.down)
+  if (this.body.touching.down || this.body.blocked.down)
   {
-    this.numJumps = 0
+    console.log("touching down");
+    this.numJumps = 0;
   }
 
 }
