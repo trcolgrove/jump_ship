@@ -150,7 +150,6 @@ Comet.prototype.move = function() {
   //  Allow the player to jump if they are touching the ground.
   if (this.body.touching.down || this.body.blocked.down)
   {
-    console.log("touching down");
     this.numJumps = 0;
   }
 

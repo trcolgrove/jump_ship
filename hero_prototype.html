@@ -21,13 +21,13 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload,
                           create: create, update: update });
 var audio;
 function preload() {
+    game.load.image('sky', 'assets/background.jpg');
     game.load.image("ship", "assets/ship.png");
-    game.load.image('sky', 'assets/space.jpg');
-    game.load.image('ground', 'assets/metal_platform.png');
+    game.load.image('ground', 'assets/platforms128x128.png');
     game.load.image('laser', 'assets/laser.png');
-    game.load.image('gameTiles', 'assets/space_texture.png');
+    game.load.image('gameTiles', 'assets/platforms128x128.png');
     game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 61, 86.25);
-    //game.load.audio('ultra', ['assets/ultraa.mp3']);
+    game.load.audio('ultra', ['assets/ultraa.mp3']);
     game.load.tilemap('level1', 'assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
 }
 
@@ -45,6 +45,7 @@ function create() {
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 2000, game.world.height);
+    background = game.add.tileSprite(0, 0, 2400, 600, 'sky');
     //  A simple background for our game
 
     //music = game.add.audio('ultra');
@@ -54,12 +55,31 @@ function create() {
     ships = game.add.group();
 
     map = game.add.tilemap('level1');
-    map.addTilesetImage('Spaceship_Texture','gameTiles');
-    blockedLayer = map.createLayer('blockedLayer');
-    map.setCollisionBetween(1, 200, true, 'blockedLayer');
+    map.addTilesetImage('platforms','gameTiles');
+    thickLayer = map.createLayer('thick_platforms');
+    map.setCollisionBetween(1, 200, true, 'thick_platforms');
+
+    thinLayer = map.createLayer('thin_platforms');
+    map.setCollisionBetween(1, 200, true, 'thin_platforms');
+
+    thinLayer.getTiles(0, 0, game.world.width, game.world.height).map(
+        function(tile) {
+            tile.collideUp = true;
+            tile.collideLeft = false;
+            tile.collideRight = false;
+            tile.collideDown = false;
+            tile.faceUp = true;
+            tile.faceDown = false;
+            tile.faceLeft = false;
+            tile.faceRight = false;
+        });
+
+    thinLayer.enableBody = true;
 
     //  We will enable physics for any object that is created in this group
-    blockedLayer.enableBody = true;
+    thickLayer.enableBody = true;
+
+
 
 /*
     // Here we create the ground.
@@ -128,7 +148,9 @@ function update() {
     this.game.physics.arcade.collide(player, ships, function(p, ship){
         collidingShip = ship;
     }, null, player);
-    game.physics.arcade.collide(player, blockedLayer);
+    game.physics.arcade.collide(player, thickLayer);
+    game.physics.arcade.collide(player, thinLayer);
+
     //game.physics.arcade.collide(player, platforms);
     player.update();
     shipFactory.update();
