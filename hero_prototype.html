@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload,
+var game = new Phaser.Game(800, 574, Phaser.AUTO, '', { preload: preload,
                           create: create, update: update });
 var audio;
 function preload() {
@@ -27,6 +27,7 @@ function preload() {
     game.load.image('ground', 'assets/platforms128x128.png');
     game.load.image('laser', 'assets/laser.png');
     game.load.image('gameTiles', 'assets/platforms128x128.png');
+    game.load.spritesheet('asteroids', 'assets/asteroids.png', 256, 256)
     game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 61, 86.25);
     game.load.audio('ultra', ['assets/ultraa.mp3']);
     game.load.tilemap('level1', 'assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -46,7 +47,8 @@ function create() {
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 2000, game.world.height);
-    background = game.add.tileSprite(0, 0, 2400, 600, 'sky');
+    background = game.add.tileSprite(0, 0, 2400, game.world.height, 'sky');
+
     //  A simple background for our game
 
     //music = game.add.audio('ultra');
@@ -56,16 +58,22 @@ function create() {
     ships = game.add.group();
 
     map = game.add.tilemap('level1');
+
     map.addTilesetImage('platforms','gameTiles');
     map.addTilesetImage('doors', 'doors');
+
     thickLayer = map.createLayer('thick_platforms');
     map.setCollisionBetween(1, 200, true, 'thick_platforms');
 
     thinLayer = map.createLayer('thin_platforms');
     map.setCollisionBetween(1, 200, true, 'thin_platforms');
 
-    doors = map.createLayer('doors');
-    map.setCollisionBetween(1, 200, true, 'doors');
+    doors = map.createLayer('door_layer');
+    //map.setCollisionBetween(1, 200, true, 'door_layer');
+
+    asteroids = game.add.group();
+
+    createAsteroids();
 
     thinLayer.getTiles(0, 0, game.world.width, game.world.height).map(
         function(tile) {
@@ -130,6 +138,11 @@ function create() {
 
     shipFactory = new Ships(game);
     shipFactory.create();
+
+    game.world.bringToTop(thinLayer);
+    game.world.bringToTop(thickLayer);
+    game.world.bringToTop(ships);
+    game.world.bringToTop(player);
     //  Our controls.
 
     this.j_key = game.input.keyboard.addKey(Phaser.Keyboard.J);
@@ -145,6 +158,47 @@ function create() {
             player.swapControl(hijackShip);
             hijackShip = null;
         }
+    });
+}
+
+function createAsteroids() {
+  //create doors
+
+  asteroids = game.add.group();
+  asteroids.enableBody = true;
+  var i = 0
+  result = findObjectsByType('asteroid', map, 'asteroid_layer');
+  result.forEach(function(element) {
+     asteroid_sprite = map.createFromObjects('asteroid_layer', element.gid,
+     'asteroids', i, true, true, asteroids, Phaser.Sprite, false);
+     //createFromTiledObject(element, asteroids);
+     i++;
+  });
+
+}
+
+function findObjectsByType(type, map, layer) {
+  var result = new Array();
+  map.objects[layer].forEach(function(element){
+
+    if(element.properties.type === type) {
+
+      //Phaser uses top left, Tiled bottom left so we have to adjust
+      //also keep in mind that the cup images are a bit smaller than the tile which is 16x16
+      //so they might not be placed in the exact position as in Tiled
+      element.y -= map.tileHeight;
+      result.push(element);
+    }
+  });
+  return result;
+}
+
+function createFromTiledObject(element, group) {
+  var sprite = group.create(element.x, element.y, element.properties.sprite);
+
+    //copy all properties to the sprite
+    Object.keys(element.properties).forEach(function(key){
+      sprite[key] = element.properties[key];
     });
 }
 
