@@ -23,6 +23,7 @@ var audio;
 function preload() {
     game.load.image('sky', 'assets/background.jpg');
     game.load.image("ship", "assets/ship.png");
+    game.load.image("doors", "assets/doors.png");
     game.load.image('ground', 'assets/platforms128x128.png');
     game.load.image('laser', 'assets/laser.png');
     game.load.image('gameTiles', 'assets/platforms128x128.png');
@@ -56,11 +57,15 @@ function create() {
 
     map = game.add.tilemap('level1');
     map.addTilesetImage('platforms','gameTiles');
+    map.addTilesetImage('doors', 'doors');
     thickLayer = map.createLayer('thick_platforms');
     map.setCollisionBetween(1, 200, true, 'thick_platforms');
 
     thinLayer = map.createLayer('thin_platforms');
     map.setCollisionBetween(1, 200, true, 'thin_platforms');
+
+    doors = map.createLayer('doors');
+    map.setCollisionBetween(1, 200, true, 'doors');
 
     thinLayer.getTiles(0, 0, game.world.width, game.world.height).map(
         function(tile) {
