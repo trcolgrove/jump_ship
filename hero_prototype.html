@@ -170,7 +170,7 @@ function createAsteroids() {
   result = findObjectsByType('asteroid', map, 'asteroid_layer');
   result.forEach(function(element) {
      asteroid_sprite = map.createFromObjects('asteroid_layer', element.gid,
-     'asteroids', i, true, true, asteroids, Phaser.Sprite, false);
+     'asteroids', i, true, true, asteroids, Phaser.Sprite, true);
      //createFromTiledObject(element, asteroids);
      i++;
   });
