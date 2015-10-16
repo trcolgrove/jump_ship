@@ -1,6 +1,4 @@
 function Ship(game) {
-    this.emitter = game.add.emitter(0, 0, 100);
-    this.emitter.makeParticles('diamond');
     this.game = game;
     this.boundsWidth = 800;
     this.boundsHeight = 600;

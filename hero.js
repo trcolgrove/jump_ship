@@ -1,5 +1,4 @@
 Comet = function(game) {
-
   Phaser.Sprite.call(this, game, 32, game.world.height - 600, 'dude');
   this.game = game;
   this.game.physics.arcade.enable(this);
@@ -68,7 +67,6 @@ Comet.prototype.shoot = function() {
         laser.scale.x *= -1;
       }
   }
-
 }
 
 Comet.prototype.jump = function() {
