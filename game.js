@@ -2,20 +2,19 @@ var game = new Phaser.Game(800, 574, Phaser.AUTO, '', { preload: preload,
                           create: create, update: update });
 var audio;
 function preload() {
-    game.load.image('sky', 'assets/space-2.png');
-    game.load.image("ship", "assets/ship.png");
-    game.load.image("doors", "assets/doors.png");
-    game.load.image('ground', 'assets/platforms128x128.png');
-    game.load.image('laser', 'assets/laser.png');
-    game.load.image('gameTiles', 'assets/platforms128x128.png');
-    game.load.spritesheet('asteroids', 'assets/asteroids.png', 256, 256)
-    game.load.spritesheet('dude', 'assets/comet_spritesheet.png', 61, 86.25);
-    game.load.audio('ultra', ['assets/ultraa.mp3']);
-    game.load.audio('laser_sound', 'assets/laser_shoot.wav');
-    game.load.audio('boom_sound', 'assets/explosion.wav');
-    game.load.tilemap('level1', 'assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('explosion1', 'assets/explosion.png', 96, 96);
-    game.load.spritesheet('smoke_particle', 'assets/smokeparticle.png')
+    game.load.image('sky', 'assets/images/space-2.png');
+    game.load.image("ship", "assets/sprites/ship.png");
+    game.load.image("doors", "assets/sprites/doors.png");
+    game.load.image('laser', 'assets/sprites/laser.png');
+    game.load.image('platformTiles', 'assets/sprites/platforms128x128.png');
+    game.load.spritesheet('asteroids', 'assets/sprites/asteroids.png', 256, 256)
+    game.load.spritesheet('dude', 'assets/sprites/comet_spritesheet.png', 61, 86.25);
+    game.load.audio('ultra', ['assets/music/ultra.mp3']);
+    game.load.audio('laser_sound', 'assets/sfx/laser_shoot.wav');
+    game.load.audio('boom_sound', 'assets/sfx/explosion.wav');
+    game.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.spritesheet('explosion1', 'assets/sprites/explosion.png', 96, 96);
+    game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png')
 }
 var player;
 var platforms;
@@ -47,7 +46,7 @@ function create() {
 
     map = game.add.tilemap('level1');
 
-    map.addTilesetImage('platforms','gameTiles');
+    map.addTilesetImage('platforms','platformTiles');
     map.addTilesetImage('doors', 'doors');
 
     thickLayer = map.createLayer('thick_platforms');
