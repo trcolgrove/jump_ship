@@ -48,7 +48,8 @@ jumpCheck = function() {
 }
 
 shoot = function() {
-  player.shoot()
+    laser_sound.play();
+    player.shoot()
 }
 
 
@@ -59,7 +60,7 @@ Comet.prototype.shoot = function() {
       x = this.position.x;
       y = this.position.y - (this.height/2.7);
       laser = this.lasers.create(x, y, 'laser');
-      laser.scale.set(.75,.75)
+      laser.scale.set(.75,.75);
       if(this.direction == 0) {
         laser.body.velocity.x = 800;
       } else if(this.direction == 1) {

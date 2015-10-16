@@ -33,6 +33,7 @@ Explosions.prototype.explode = function(x, y, width, height) {
     explosion_sprite.height = height;
     explosion_sprite.animations.add('explode', null, 24, false);
     explosion_sprite.animations.play('explode', null, false, true);
+    boom_sound.play();
     /*this.emitter.forEach(function(smokeParticle) {
         //smokeParticle.play('smokeAnim');
     });*/
