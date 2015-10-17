@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 574, Phaser.AUTO, '', { preload: preload,
-                          create: create, update: update });
+                          create: create, update: update});
 var audio;
 
 function preload() {
@@ -16,7 +16,8 @@ function preload() {
     game.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('explosion1', 'assets/sprites/explosion.png', 96, 96);
     game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png');
-    game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav')
+    game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav');
+    game.state.add("GameOver", gameOver);
 }
 var player;
 var platforms;
@@ -153,7 +154,7 @@ function createAsteroids() {
      //createFromTiledObject(element, asteroids);
      i++;
   });
- 
+
 }
 
 
@@ -196,6 +197,10 @@ function update() {
 
     game.physics.arcade.collide(ships, lasers, function(ship, laser){
         ship.hit(10);
+        laser.destroy();
+    });
+    game.physics.arcade.collide(player, lasers, function(player, laser) {
+        player.hit(10);
         laser.destroy();
     });
     enemyFire();

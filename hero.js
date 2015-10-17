@@ -4,7 +4,7 @@ Comet = function(game) {
   this.game.physics.arcade.enable(this);
   this.body.setSize(this.width - 45, this.height, -10, 0)
   this.anchor.setTo(.5, .5);
-
+  this.health = 100;
   this.numJumps = 0;
   this.isLeft = false;
   this.cursors = game.input.keyboard.createCursorKeys();
@@ -26,6 +26,7 @@ Comet.prototype.constructor = Comet;
 Comet.prototype.update = function() {
     if(this.health <= 0) {
         explosion_gen.explode(this.x, this.y, this.height, this.height);
+        this.game.state.start("GameOver", true, false);
     }
     if(this.ship != null) {
     this.ship.move();
@@ -35,10 +36,10 @@ Comet.prototype.update = function() {
 }
 
 Comet.prototype.shoot = function() {
-    laser_sound.play();
     if(this.ship != null) {
       this.ship.shoot();
     } else {
+      laser_sound.play();
       x = this.position.x;
       y = this.position.y - (this.height/2.7);
       laser = lasers.create(x, y, 'laser');
@@ -79,13 +80,11 @@ Comet.prototype.swapControl = function(ship) {
     }
 }
 
-Comet.prototype.hit = function() {
-    this.health -= 10;
+Comet.prototype.hit = function(damage) {
+    this.health -= damage;
 }
 
 Comet.prototype.move = function() {
-
-
   this.body.velocity.x = 0;
   sprint = 1
 
