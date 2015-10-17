@@ -20,6 +20,7 @@ var player;
 var platforms;
 var cursors;
 var ships;
+var lasers;
 var controls;
 var hijackShip = null;
 var collidingShip = null;
@@ -64,8 +65,6 @@ function create() {
     game.world.bringToTop(thickLayer);
     game.world.bringToTop(ships);
     game.world.bringToTop(player);
-
-
 }
 
 function setControls() {
@@ -85,7 +84,7 @@ function setControls() {
             hijackShip = collidingShip;
             player.swapControl(hijackShip);
             hijackShip.swapControl();
-        } else {
+        } else if (hijackShip != null){
             player.ship.swapControl(hijackShip);
             player.swapControl(hijackShip);
             hijackShip = null;

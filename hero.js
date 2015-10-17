@@ -6,7 +6,7 @@ Comet = function(game) {
   this.anchor.setTo(.5, .5);
 
   this.numJumps = 0;
-  this.direction = 0
+  this.isLeft = false;
   this.cursors = game.input.keyboard.createCursorKeys();
   this.MAX_JUMPS = 2;
 
@@ -43,11 +43,12 @@ Comet.prototype.shoot = function() {
       y = this.position.y - (this.height/2.7);
       laser = this.lasers.create(x, y, 'laser');
       laser.scale.set(.75,.75);
-      if(this.direction == 0) {
-        laser.body.velocity.x = 800;
-      } else if(this.direction == 1) {
-        laser.body.velocity.x = -800;
-        laser.scale.x *= -1;
+        if(this.isLeft == false) {
+            laser.body.velocity.x = 800;
+        }
+        else if(this.isLeft == true) {
+            laser.body.velocity.x = -800;
+            laser.scale.x *= -1;
       }
     }
 }
@@ -90,11 +91,11 @@ Comet.prototype.move = function() {
   if (controls.left.isDown)
   {
       //  Move to the left
-      if(this.direction == 0) {
+      if(this.isLeft == false) {
         this.body.offset.x = 10
         this.scale.x *= -1;
       }
-      this.direction = 1
+      this.isLeft = true
       this.body.velocity.x = -150 * sprint;
       if(this.body.touching.down ||  this.body.blocked.down) {
         this.animations.play('walk');
@@ -107,10 +108,10 @@ Comet.prototype.move = function() {
       this.body.offset.x = -10
 
       //  Move to the right
-      if(this.direction == 1) {
+      if(this.isLeft == true) {
         this.scale.x *= -1;
       }
-      this.direction = 0
+      this.isLeft = false
       this.body.velocity.x = 150 * sprint;
       if(this.body.touching.down || this.body.blocked.down) {
         this.animations.play('walk');
@@ -121,7 +122,7 @@ Comet.prototype.move = function() {
   else
   {
       this.frame = 4;
-      if(this.direction == 1) {
+      if(this.isLeft == true) {
         this.scale.x *= -1;
       }
   }
