@@ -45,7 +45,7 @@ function create() {
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.world.setBounds(0, 0, 2000, game.world.height);
+    game.world.setBounds(0, 0, 10000, game.world.height);
     background = game.add.tileSprite(0, 0, 2400, game.world.height, 'sky');
 
     ships = game.add.group();
@@ -211,7 +211,7 @@ function update() {
 
 function enemyFire() {
     ships.forEachAlive(function (enemy) {
-      if (game.time.now > enemy.nextShotAt) {
+      if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
          enemy.shoot();
          enemy.nextShotAt = game.time.now + (Math.random()*4000)%4000;
        }
