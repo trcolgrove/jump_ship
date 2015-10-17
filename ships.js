@@ -20,7 +20,7 @@ Ships.prototype.create = function() {
         ship = new Ship(this.game);
         game.add.existing(ship);
         ships.add(ship);
-    } );
+    });
 }
 
 Ships.prototype.update = function() {

@@ -24,11 +24,14 @@ Comet.prototype.constructor = Comet;
 
 
 Comet.prototype.update = function() {
-  if(this.ship != null) {
+    if(this.health <= 0) {
+        explosion_gen.explode(this.x, this.y, this.height, this.height);
+    }
+    if(this.ship != null) {
     this.ship.move();
-  } else {
+    } else {
     this.move();
-  }
+    }
 }
 
 Comet.prototype.shoot = function() {
@@ -46,7 +49,7 @@ Comet.prototype.shoot = function() {
         else if(this.isLeft == true) {
             laser.body.velocity.x = -800;
             laser.scale.x *= -1;
-      }
+        }
     }
 }
 
@@ -76,7 +79,12 @@ Comet.prototype.swapControl = function(ship) {
     }
 }
 
+Comet.prototype.hit = function() {
+    this.health -= 10;
+}
+
 Comet.prototype.move = function() {
+
 
   this.body.velocity.x = 0;
   sprint = 1

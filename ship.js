@@ -7,6 +7,7 @@ function Ship(game) {
     this.shipHeight = 60;
     this.laserWidth = 200;
     this.laserHeight = 20;
+    this.nextShotAt = game.time.now + 5;
     Phaser.Sprite.call(this, game, this.boundsWidth, Math.floor(Math.random() *
                (this.boundsHeight - this.shipHeight + 1)), 'ship');
                this.game.physics.arcade.enable(this);
@@ -19,7 +20,6 @@ function Ship(game) {
     this.facingLeft = true;
     this.inputEnabled = false;
     this.body.immovable = true;
-
 }
 
 Ship.prototype = Object.create(Phaser.Sprite.prototype);
@@ -42,7 +42,7 @@ Ship.prototype.hit = function(damage) {
 Ship.prototype.shake = function() {
     shakeTween = game.add.tween(this);
     shakeTween.to({
-		offsetX: this.x+3
+		x: this.x+3
 	}, 10, Phaser.Easing.Cubic.None);
 	shakeTween.to({
 		x: this.x-3
@@ -76,11 +76,16 @@ Ship.prototype.swapControl = function() {
 }
 
 Ship.prototype.shoot = function() {
+    ship_laser_sound.play();
     x = this.position.x;
     y = this.position.y;
     laser = lasers.create(x, y, 'laser');
     laser.scale.set(.75,.75)
-    laser.body.velocity.x = 800;
+    if(this.userControlled) {
+        laser.body.velocity.x = 800;
+    } else {
+        laser.body.velocity.x = -800;
+    }
 }
 
 Ship.prototype.move = function() {

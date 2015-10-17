@@ -15,7 +15,8 @@ function preload() {
     game.load.audio('boom_sound', 'assets/sfx/explosion.wav');
     game.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('explosion1', 'assets/sprites/explosion.png', 96, 96);
-    game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png')
+    game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png');
+    game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav')
 }
 var player;
 var platforms;
@@ -135,6 +136,7 @@ function initTileMap() {
 function initGameAudio() {
     boom_sound = game.add.audio('boom_sound');
     laser_sound = game.add.audio('laser_sound');
+    ship_laser_sound = game.add.audio('ship_laser_sound');
 }
 
 
@@ -151,7 +153,7 @@ function createAsteroids() {
      //createFromTiledObject(element, asteroids);
      i++;
   });
-
+ 
 }
 
 
@@ -196,5 +198,14 @@ function update() {
         ship.hit(10);
         laser.destroy();
     });
+    enemyFire();
+}
 
+function enemyFire() {
+    ships.forEachAlive(function (enemy) {
+      if (game.time.now > enemy.nextShotAt) {
+         enemy.shoot();
+         enemy.nextShotAt = game.time.now + (Math.random()*4000)%4000;
+       }
+    }, this);
 }

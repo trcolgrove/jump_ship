@@ -37,7 +37,6 @@ Explosions.prototype.explode = function(x, y, width, height) {
     /*this.emitter.forEach(function(smokeParticle) {
         //smokeParticle.play('smokeAnim');
     });*/
-
     this.emitter.start(true, 500, null, 50);
 }
 
