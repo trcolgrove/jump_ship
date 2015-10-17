@@ -193,9 +193,8 @@ function update() {
     ships.update();
 
     game.physics.arcade.collide(ships, lasers, function(ship, laser){
-        ship.alive = false;
+        ship.hit(10);
         laser.destroy();
-        explosion_gen.explode(ship.x, ship.y, 300, 300);
     });
 
 }

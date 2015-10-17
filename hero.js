@@ -109,7 +109,7 @@ Comet.prototype.move = function() {
       if(this.isLeft == true) {
         this.scale.x *= -1;
       }
-      this.isLeft = false
+      this.isLeft = false;
       this.body.velocity.x = 150 * sprint;
       if(this.body.touching.down || this.body.blocked.down) {
         this.animations.play('walk');

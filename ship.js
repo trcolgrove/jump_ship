@@ -2,7 +2,7 @@ function Ship(game) {
     this.game = game;
     this.boundsWidth = 800;
     this.boundsHeight = 600;
-    this.health = 100;
+    this.health = 50;
     this.shipWidth = 160;
     this.shipHeight = 60;
     this.laserWidth = 200;
@@ -11,10 +11,9 @@ function Ship(game) {
                (this.boundsHeight - this.shipHeight + 1)), 'ship');
                this.game.physics.arcade.enable(this);
     this.anchor.setTo(.5, .5);
-    this.cursors;
     this.enableBody = true;
     this.userControlled = false;
-    this.body.setSize(this.width, this.height - 20, 0, 0);
+    this.body.setSize(this.width - 30, this.height - 20, 0, 0);
 
     this.body.velocity.x = -50;
     this.facingLeft = true;
@@ -27,11 +26,42 @@ Ship.prototype = Object.create(Phaser.Sprite.prototype);
 Ship.prototype.constructor = Ship;
 
 Ship.prototype.update = function() {
-    if(!this.alive) {
+    if(this.health <= 0) {
+        this.alive = false;
+        explosion_gen.explode(this.x, this.y, 250, 250);
         this.destroy();
         return;
     }
 }
+
+Ship.prototype.hit = function(damage) {
+    this.health -= damage;
+    this.shake();
+}
+
+Ship.prototype.shake = function() {
+    shakeTween = game.add.tween(this);
+    shakeTween.to({
+		offsetX: this.x+3
+	}, 10, Phaser.Easing.Cubic.None);
+	shakeTween.to({
+		x: this.x-3
+	}, 10, Phaser.Easing.Cubic.None);
+	shakeTween.to({
+		x: this.x+3
+	}, 10, Phaser.Easing.Cubic.None);
+	shakeTween.to({
+		x: this.x-3
+	}, 10, Phaser.Easing.Cubic.None);
+	shakeTween.to({
+		x: this.x+3
+	}, 10, Phaser.Easing.Cubic.None);
+    shakeTween.to({
+		x: this.x-3
+	},10, Phaser.Easing.Cubic.None);
+	shakeTween.start();
+}
+
 
 Ship.prototype.swapControl = function() {
     if (this.userControlled) {
@@ -51,7 +81,6 @@ Ship.prototype.shoot = function() {
     laser = lasers.create(x, y, 'laser');
     laser.scale.set(.75,.75)
     laser.body.velocity.x = 800;
-    explosion_gen.explode(x, y, 250, 250);
 }
 
 Ship.prototype.move = function() {
