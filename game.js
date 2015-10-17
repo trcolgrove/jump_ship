@@ -22,6 +22,8 @@ function preload() {
     game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav');
     game.state.add("GameOver", gameOver);
 }
+
+var music;
 var player;
 var platforms;
 var cursors;
@@ -33,11 +35,7 @@ var collidingShip = null;
 var particles;
 var explosion_gen;
 
-//controls
-var wasd;
-var space;
-var shift;
-var jkey;
+
 
 function create() {
 
@@ -75,6 +73,10 @@ function create() {
     game.world.bringToTop(thickLayer);
     game.world.bringToTop(ships);
     game.world.bringToTop(player);
+    game.world.bringToTop(lasers);
+
+    music.play();
+    music.loop = true;
 }
 
 function setControls() {
@@ -102,6 +104,7 @@ function setControls() {
     });
     controls.up.onDown.add(function() { player.jump(); });
     controls.space.onDown.add(function() { player.shoot()});
+
 }
 
 
@@ -138,6 +141,7 @@ function initTileMap() {
 }
 
 function initGameAudio() {
+    music = game.add.audio('ultra');
     boom_sound = game.add.audio('boom_sound');
     laser_sound = game.add.audio('laser_sound');
     ship_laser_sound = game.add.audio('ship_laser_sound');
@@ -193,6 +197,8 @@ function update() {
     }, null, player);
     game.physics.arcade.collide(player, thickLayer);
     game.physics.arcade.collide(player, thinLayer);
+    game.physics.arcade.collide(ships, thickLayer);
+
 
     player.update();
     shipFactory.update();
