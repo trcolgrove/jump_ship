@@ -4,7 +4,7 @@ var audio;
 
 function preload() {
     game.load.image('sky', 'assets/images/space-2.png');
-    game.load.image("ship", "assets/sprites/ship.png");
+    game.load.spritesheet("ship", "assets/sprites/ship_sheet.png", 200, 58);
     game.load.image("doors", "assets/sprites/doors.png");
     game.load.image('red_laser', 'assets/sprites/red_laser.png');
     game.load.image('blue_laser', 'assets/sprites/blue_laser.png');
@@ -61,7 +61,6 @@ function create() {
     game.add.existing(player);
     player.scale.set(.75,.75);
     game.camera.follow(player);
-
     explosion_gen = new Explosions(game);
     shipFactory = new Ships(game);
     shipFactory.create();
@@ -217,7 +216,7 @@ function enemyFire() {
     ships.forEachAlive(function (enemy) {
       if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
          enemy.shoot();
-         enemy.nextShotAt = game.time.now + (Math.random()*4000)%4000;
+         enemy.nextShotAt = game.time.now + (Math.random()*2000)%2000;
        }
     }, this);
 }

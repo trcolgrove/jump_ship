@@ -11,6 +11,7 @@ function Ship(game) {
     Phaser.Sprite.call(this, game, this.boundsWidth, Math.floor(Math.random() *
                (this.boundsHeight - this.shipHeight + 1)), 'ship');
                this.game.physics.arcade.enable(this);
+    this.frame = 2;
     this.anchor.setTo(.5, .5);
     this.enableBody = true;
     this.userControlled = false;
@@ -74,10 +75,12 @@ Ship.prototype.shake = function() {
 
 Ship.prototype.swapControl = function() {
     if (this.userControlled) {
+        this.frame = 0;
         this.userControlled = false;
         this.body.gravity.y = 500;
         this.alive = false;
     } else {
+        this.frame = 1;
         this.userControlled = true;
         this.body.velocity.x = 0;
         this.scale.x *= -1;
