@@ -79,11 +79,12 @@ Ship.prototype.shoot = function() {
     ship_laser_sound.play();
     x = this.position.x;
     y = this.position.y;
-    laser = lasers.create(x, y, 'laser');
-    laser.scale.set(.75,.75)
+    laser = lasers.create(x, y, 'green_laser');
+    laser.scale.set(.75,.75);
     if(this.userControlled) {
         laser.body.velocity.x = 800;
     } else {
+        laser.scale.x *= -1;
         laser.body.velocity.x = -800;
     }
 }

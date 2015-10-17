@@ -6,7 +6,10 @@ function preload() {
     game.load.image('sky', 'assets/images/space-2.png');
     game.load.image("ship", "assets/sprites/ship.png");
     game.load.image("doors", "assets/sprites/doors.png");
-    game.load.image('laser', 'assets/sprites/laser.png');
+    game.load.image('red_laser', 'assets/sprites/red_laser.png');
+    game.load.image('blue_laser', 'assets/sprites/blue_laser.png');
+    game.load.image('yellow_laser', 'assets/sprites/yellow_laser.png');
+    game.load.image('green_laser', 'assets/sprites/green_laser.png');
     game.load.image('platformTiles', 'assets/sprites/platforms128x128.png');
     game.load.spritesheet('asteroids', 'assets/sprites/asteroids.png', 256, 256)
     game.load.spritesheet('comet_hero', 'assets/sprites/comet_spritesheet.png', 61, 86.25);

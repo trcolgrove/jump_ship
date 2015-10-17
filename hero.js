@@ -42,7 +42,7 @@ Comet.prototype.shoot = function() {
       laser_sound.play();
       x = this.position.x;
       y = this.position.y - (this.height/2.7);
-      laser = lasers.create(x, y, 'laser');
+      laser = lasers.create(x, y, 'red_laser');
       laser.scale.set(.75,.75);
         if(this.isLeft == false) {
             laser.body.velocity.x = 800;
