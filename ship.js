@@ -2,10 +2,9 @@ function Ship(game) {
     this.game = game;
     this.boundsWidth = 800;
     this.boundsHeight = 600;
-    this.ships;
+    this.health = 100;
     this.shipWidth = 160;
     this.shipHeight = 60;
-    this.lasers;
     this.laserWidth = 200;
     this.laserHeight = 20;
     Phaser.Sprite.call(this, game, this.boundsWidth, Math.floor(Math.random() *
@@ -15,9 +14,7 @@ function Ship(game) {
     this.cursors;
     this.enableBody = true;
     this.userControlled = false;
-    this.lasers = game.add.group();
-    this.lasers.enableBody = true;
-    this.body.setSize(this.width, this.height - 50, 0, 0);
+    this.body.setSize(this.width, this.height - 20, 0, 0);
 
     this.body.velocity.x = -50;
     this.facingLeft = true;
@@ -28,6 +25,13 @@ function Ship(game) {
 
 Ship.prototype = Object.create(Phaser.Sprite.prototype);
 Ship.prototype.constructor = Ship;
+
+Ship.prototype.update = function() {
+    if(!this.alive) {
+        this.destroy();
+        return;
+    }
+}
 
 Ship.prototype.swapControl = function() {
     if (this.userControlled) {
@@ -44,9 +48,10 @@ Ship.prototype.swapControl = function() {
 Ship.prototype.shoot = function() {
     x = this.position.x;
     y = this.position.y;
-    laser = this.lasers.create(x, y, 'laser');
+    laser = lasers.create(x, y, 'laser');
     laser.scale.set(.75,.75)
     laser.body.velocity.x = 800;
+    explosion_gen.explode(x, y, 250, 250);
 }
 
 Ship.prototype.move = function() {

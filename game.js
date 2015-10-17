@@ -1,6 +1,7 @@
 var game = new Phaser.Game(800, 574, Phaser.AUTO, '', { preload: preload,
                           create: create, update: update });
 var audio;
+
 function preload() {
     game.load.image('sky', 'assets/images/space-2.png');
     game.load.image("ship", "assets/sprites/ship.png");
@@ -25,6 +26,7 @@ var controls;
 var hijackShip = null;
 var collidingShip = null;
 var particles;
+var explosion_gen;
 
 //controls
 var wasd;
@@ -60,6 +62,9 @@ function create() {
     explosion_gen = new Explosions(game);
     shipFactory = new Ships(game);
     shipFactory.create();
+
+    lasers = game.add.group();
+    lasers.enableBody = true;
 
     game.world.bringToTop(thinLayer);
     game.world.bringToTop(thickLayer);
@@ -177,14 +182,20 @@ function createFromTiledObject(element, group) {
 function update() {
     collidingShip = null;
     explosion_gen.update();
-    this.game.physics.arcade.collide(player, ships, function(p, ship){
+    game.physics.arcade.collide(player, ships, function(p, ship){
         collidingShip = ship;
     }, null, player);
     game.physics.arcade.collide(player, thickLayer);
     game.physics.arcade.collide(player, thinLayer);
 
-    //game.physics.arcade.collide(player, platforms);
     player.update();
     shipFactory.update();
     ships.update();
+
+    game.physics.arcade.collide(ships, lasers, function(ship, laser){
+        ship.alive = false;
+        laser.destroy();
+        explosion_gen.explode(ship.x, ship.y, 300, 300);
+    });
+
 }

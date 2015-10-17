@@ -10,12 +10,9 @@ Comet = function(game) {
   this.cursors = game.input.keyboard.createCursorKeys();
   this.MAX_JUMPS = 2;
 
-
   this.body.bounce.y = 0;
   this.body.gravity.y = 500;
   this.body.collideWorldBounds = false;
-  this.lasers = game.add.group();
-  this.lasers.enableBody = true;
   //  Our two animations, walking left and right
 //  this.cursors.up.onDown.add(jumpCheck)
   this.animations.add('walk', [4, 5, 6, 7], 10, true);
@@ -41,7 +38,7 @@ Comet.prototype.shoot = function() {
     } else {
       x = this.position.x;
       y = this.position.y - (this.height/2.7);
-      laser = this.lasers.create(x, y, 'laser');
+      laser = lasers.create(x, y, 'laser');
       laser.scale.set(.75,.75);
         if(this.isLeft == false) {
             laser.body.velocity.x = 800;
@@ -103,6 +100,7 @@ Comet.prototype.move = function() {
         this.frame = 5;
       }
   }
+
   else if (controls.right.isDown)
   {
       this.body.offset.x = -10
@@ -119,6 +117,7 @@ Comet.prototype.move = function() {
         this.frame = 5;
       }
   }
+
   else
   {
       this.frame = 4;
@@ -132,7 +131,7 @@ Comet.prototype.move = function() {
   //  Allow the player to jump if they are touching the ground.
   if (this.body.touching.down || this.body.blocked.down)
   {
-    this.numJumps = 0;
+      this.numJumps = 0;
   }
 
 }
