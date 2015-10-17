@@ -197,8 +197,6 @@ function update() {
     }, null, player);
     game.physics.arcade.collide(player, thickLayer);
     game.physics.arcade.collide(player, thinLayer);
-    game.physics.arcade.collide(ships, thickLayer);
-
 
     player.update();
     shipFactory.update();
