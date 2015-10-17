@@ -1,5 +1,5 @@
 Comet = function(game) {
-  Phaser.Sprite.call(this, game, 32, game.world.height - 600, 'dude');
+  Phaser.Sprite.call(this, game, 32, game.world.height - 600, 'comet_hero');
   this.game = game;
   this.game.physics.arcade.enable(this);
   this.body.setSize(this.width - 45, this.height, -10, 0)
