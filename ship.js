@@ -13,21 +13,12 @@ function Ship(game) {
                this.game.physics.arcade.enable(this);
     this.anchor.setTo(.5, .5);
     this.cursors;
-    this.fireLaserKey;   // Space bar
     this.enableBody = true;
     this.userControlled = false;
     this.lasers = game.add.group();
     this.lasers.enableBody = true;
     this.body.setSize(this.width, this.height - 50, 0, 0);
-    this.cursors = game.input.keyboard.createCursorKeys();
-    this.shift = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
-    this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
-    this.wasd = {
-      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-      right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-    };
+
     this.body.velocity.x = -50;
     this.facingLeft = true;
     this.inputEnabled = false;
@@ -62,18 +53,18 @@ Ship.prototype.move = function() {
     this.body.velocity.x = 0;
     this.body.velocity.y = 0;
 
-    if (this.wasd.left.isDown) {
+    if (controls.left.isDown) {
         this.facingLeft = true;
         this.body.velocity.x = -150;
     }
-    if (this.wasd.right.isDown) {
+    if (controls.right.isDown) {
         this.facingLeft = false;
         this.body.velocity.x = 150;
     }
-    if (this.wasd.up.isDown) {
+    if (controls.up.isDown) {
         this.body.velocity.y = -150;
     }
-    if (this.wasd.down.isDown) {
+    if (controls.down.isDown) {
         this.body.velocity.y = 150;
     }
 }

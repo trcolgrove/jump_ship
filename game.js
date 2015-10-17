@@ -20,11 +20,20 @@ var player;
 var platforms;
 var cursors;
 var ships;
+var controls;
 var hijackShip = null;
 var collidingShip = null;
 var particles;
 
+//controls
+var wasd;
+var space;
+var shift;
+var jkey;
+
 function create() {
+
+    setControls();
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -55,12 +64,23 @@ function create() {
     game.world.bringToTop(thickLayer);
     game.world.bringToTop(ships);
     game.world.bringToTop(player);
-    //  Our controls.\
 
-    this.j_key = game.input.keyboard.addKey(Phaser.Keyboard.J);
 
-    this.j_key.onDown.add(function() {
+}
 
+function setControls() {
+
+    controls = {
+      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+      right: game.input.keyboard.addKey(Phaser.Keyboard.D),
+      shift : game.input.keyboard.addKey(Phaser.Keyboard.SHIFT),
+      space : game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
+      j_key : game.input.keyboard.addKey(Phaser.Keyboard.J),
+    };
+
+    controls.j_key.onDown.add(function() {
         if(collidingShip != null) {
             hijackShip = collidingShip;
             player.swapControl(hijackShip);
@@ -71,7 +91,10 @@ function create() {
             hijackShip = null;
         }
     });
+    controls.up.onDown.add(function() { player.jump(); });
+    controls.space.onDown.add(function() { player.shoot()});
 }
+
 
 function initTileMap() {
     map = game.add.tilemap('level1');
@@ -146,7 +169,6 @@ function findObjectsByType(type, map, layer) {
 
 function createFromTiledObject(element, group) {
   var sprite = group.create(element.x, element.y, element.properties.sprite);
-
     //copy all properties to the sprite
     Object.keys(element.properties).forEach(function(key){
       sprite[key] = element.properties[key];

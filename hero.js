@@ -9,24 +9,15 @@ Comet = function(game) {
   this.direction = 0
   this.cursors = game.input.keyboard.createCursorKeys();
   this.MAX_JUMPS = 2;
-  this.shift = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-  this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-  this.j_key = game.input.keyboard.addKey(Phaser.Keyboard.J);
-  this.wasd = {
-    up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-    down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-    left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-    right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-  };
+
+
   this.body.bounce.y = 0;
   this.body.gravity.y = 500;
   this.body.collideWorldBounds = false;
   this.lasers = game.add.group();
   this.lasers.enableBody = true;
   //  Our two animations, walking left and right
-  this.wasd.up.onDown.add(jumpCheck)
 //  this.cursors.up.onDown.add(jumpCheck)
-  this.space.onDown.add(shoot)
   this.animations.add('walk', [4, 5, 6, 7], 10, true);
   this.ship = null;
 }
@@ -43,20 +34,11 @@ Comet.prototype.update = function() {
   }
 }
 
-jumpCheck = function() {
-  player.jump()
-}
-
-shoot = function() {
-    laser_sound.play();
-    player.shoot()
-}
-
-
 Comet.prototype.shoot = function() {
-  if(this.ship != null) {
+    laser_sound.play();
+    if(this.ship != null) {
       this.ship.shoot();
-  } else {
+    } else {
       x = this.position.x;
       y = this.position.y - (this.height/2.7);
       laser = this.lasers.create(x, y, 'laser');
@@ -67,7 +49,7 @@ Comet.prototype.shoot = function() {
         laser.body.velocity.x = -800;
         laser.scale.x *= -1;
       }
-  }
+    }
 }
 
 Comet.prototype.jump = function() {
@@ -101,11 +83,11 @@ Comet.prototype.move = function() {
   this.body.velocity.x = 0;
   sprint = 1
 
-  if(this.shift.isDown) {
+  if(controls.shift.isDown) {
     sprint = 2
   }
 
-  if (/*this.cursors.left.isDown ||*/ this.wasd.left.isDown)
+  if (controls.left.isDown)
   {
       //  Move to the left
       if(this.direction == 0) {
@@ -120,7 +102,7 @@ Comet.prototype.move = function() {
         this.frame = 5;
       }
   }
-  else if (/*this.cursors.right.isDown ||*/ this.wasd.right.isDown)
+  else if (controls.right.isDown)
   {
       this.body.offset.x = -10
 
@@ -144,7 +126,7 @@ Comet.prototype.move = function() {
       }
   }
 
-  if ((/*this.cursors.up.isDown || */this.wasd.up.isDown) && this.numJumps < this.MAX_JUMPS) {
+  if ((controls.up.isDown) && this.numJumps < this.MAX_JUMPS) {
   }
   //  Allow the player to jump if they are touching the ground.
   if (this.body.touching.down || this.body.blocked.down)
