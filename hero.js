@@ -31,8 +31,9 @@ Comet.prototype.update = function() {
         this.game.state.start("GameOver", true, false);
     }
     if(this.health <= 0) {
+        /*
         explosion_gen.explode(this.x, this.y, this.height, this.height);
-        this.game.state.start("GameOver", true, false);
+        this.game.state.start("GameOver", true, false);*/
     }
     if(this.ship != null) {
     this.ship.move();

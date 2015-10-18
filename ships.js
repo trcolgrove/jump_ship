@@ -17,9 +17,10 @@ function Ships(game) {
 
 Ships.prototype.create = function() {
     this.game.time.events.loop(4000, function() {
-        ship = new Ship(this.game);
+        ship = new Ship(this.game, 800, Math.random()*this.game.height, 'ship', 2);
         game.add.existing(ship);
         ships.add(ship);
+        ship.body.velocity.x = -50;
     });
 }
 

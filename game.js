@@ -4,9 +4,10 @@ var audio;
 
 function preload() {
     game.load.image('sky', 'assets/images/space-2.png');
-    game.load.spritesheet("ship", "assets/sprites/ship_sheet.png", 200, 58);
+    game.load.spritesheet("ship", "assets/sprites/sport_ship.png", 200, 58);
     game.load.image("doors", "assets/sprites/doors.png");
     game.load.image('red_laser', 'assets/sprites/red_laser.png');
+    game.load.image('red_laser_double', 'assets/sprites/red_laser_double.png');
     game.load.image('blue_laser', 'assets/sprites/blue_laser.png');
     game.load.image('yellow_laser', 'assets/sprites/yellow_laser.png');
     game.load.image('green_laser', 'assets/sprites/green_laser.png');
@@ -46,7 +47,6 @@ function create() {
     game.world.setBounds(0, 0, 10000, game.world.height);
     background = game.add.tileSprite(0, 0, 2400, game.world.height, 'sky');
 
-    ships = game.add.group();
     particles = game.add.group();
 
     initGameAudio();
@@ -62,6 +62,7 @@ function create() {
     player.scale.set(.75,.75);
     game.camera.follow(player);
     explosion_gen = new Explosions(game);
+
     shipFactory = new Ships(game);
     shipFactory.create();
 
@@ -74,7 +75,7 @@ function create() {
     game.world.bringToTop(player);
     game.world.bringToTop(lasers);
 
-    music.play();
+    //music.play();
     music.loop = true;
 }
 
@@ -121,9 +122,8 @@ function initTileMap() {
 
     doors = map.createLayer('door_layer');
 
-    asteroids = game.add.group();
     createAsteroids();
-
+    createShips();
     //enable tile map collisions
     thinLayer.getTiles(0, 0, game.world.width, game.world.height).forEach(
         function(tile) {
@@ -146,6 +146,14 @@ function initGameAudio() {
     ship_laser_sound = game.add.audio('ship_laser_sound');
 }
 
+function createShips() {
+    ships = game.add.group();
+    ships.enableBody = true;
+    result = findObjectsByType('ship', map, 'enemies');
+    map.createFromObjects('enemies', 86,
+       'ship', 2, true, true, ships, Ship, true);
+
+}
 
 function createAsteroids() {
   //create doors
@@ -157,7 +165,6 @@ function createAsteroids() {
   result.forEach(function(element) {
      asteroid_sprite = map.createFromObjects('asteroid_layer', element.gid,
      'asteroids', i, true, true, asteroids, Phaser.Sprite, true);
-     //createFromTiledObject(element, asteroids);
      i++;
   });
 
@@ -215,7 +222,9 @@ function update() {
 function enemyFire() {
     ships.forEachAlive(function (enemy) {
       if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
-         enemy.shoot();
+         if(enemy.position.distance(player) <= 800) {
+             enemy.shoot();
+         }
          enemy.nextShotAt = game.time.now + (Math.random()*2000)%2000;
        }
     }, this);
