@@ -5,6 +5,7 @@ var audio;
 function preload() {
     game.load.image('sky', 'assets/images/space-2.png');
     game.load.spritesheet("ship", "assets/sprites/sport_ship.png", 200, 58);
+    game.load.spritesheet("destroyer", "assets/sprites/destroyer.png", 200, 58);
     game.load.image("doors", "assets/sprites/doors.png");
     game.load.image('red_laser', 'assets/sprites/red_laser.png');
     game.load.image('red_laser_double', 'assets/sprites/red_laser_double.png');
@@ -152,6 +153,8 @@ function createShips() {
     result = findObjectsByType('ship', map, 'enemies');
     map.createFromObjects('enemies', 86,
        'ship', 2, true, true, ships, Ship, true);
+    map.createFromObjects('enemies', 89,
+       'destroyer', 2, true, true, ships, Ship, true);
 
 }
 
@@ -222,7 +225,8 @@ function update() {
 function enemyFire() {
     ships.forEachAlive(function (enemy) {
       if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
-         if(enemy.position.distance(player) <= 800) {
+         if(enemy.position.distance(player) <= 800 ||
+         (hijackShip != null && enemy.position.distance(hijackShip) <= 800)) {
              enemy.shoot();
          }
          enemy.nextShotAt = game.time.now + (Math.random()*2000)%2000;

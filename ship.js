@@ -14,16 +14,15 @@ function Ship(game, x, y, key, frame) {
     this.userControlled = false;
     this.body.setSize(this.width - 30, this.height - 20, 0, 0);
 
-    //this.body.velocity.x = -50;
     this.facingLeft = true;
     this.inputEnabled = false;
     this.body.immovable = true;
     this.collideWorldBounds = false;
     if(key == "ship") {
-        this.laserSprite = 'green_laser';
+        this.laserSprite = 'red_laser_double';
 
     } else if(key == "destroyer") {
-        this.laserSprite = 'yellow_laser';
+        this.laserSprite = 'green_laser';
     }
 }
 
@@ -44,6 +43,23 @@ Ship.prototype.update = function() {
         }
         this.destroy();
         return;
+    }
+    if(hijackShip) {
+        x = this.x;
+        y = hijackShip.y;
+    }
+    else if(player) {
+        x = this.x;
+        y = player.y;
+    }
+    if(!this.userControlled && this.alive) {
+        this.game.physics.arcade.moveToXY(
+        this,
+        x,
+        y,
+        50, // speed,
+        500 // maxTimeToFinish(ms)
+        );
     }
 }
 
