@@ -52,15 +52,6 @@ Ship.prototype.update = function() {
         x = this.x;
         y = player.y;
     }
-    if(!this.userControlled && this.alive) {
-        this.game.physics.arcade.moveToXY(
-        this,
-        x,
-        y,
-        50, // speed,
-        500 // maxTimeToFinish(ms)
-        );
-    }
 }
 
 Ship.prototype.hit = function(damage) {
