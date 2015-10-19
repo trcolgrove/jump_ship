@@ -62,6 +62,10 @@ function create() {
     game.add.existing(player);
     player.scale.set(.75,.75);
     game.camera.follow(player);
+
+    // healthbar = new HealthBar(game, player, 50, 50, 100, 8);
+    // game.add.sprite(50, 50, healthbar.bar);
+
     explosion_gen = new Explosions(game);
 
     shipFactory = new Ships(game);
