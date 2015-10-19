@@ -25,6 +25,12 @@ function Ship(game, x, y, key, frame) {
     } else if(key == "destroyer") {
         this.laserSprite = 'green_laser';
     }
+
+    this.healthBar = new HealthBar(game, this);
+    game.add.existing(this.healthBar);
+
+    this.healthBarRed = new HealthBarRed(game, this.healthBar);
+    game.add.existing(this.healthBarRed);
 }
 
 Ship.prototype = Object.create(Phaser.Sprite.prototype);
@@ -43,6 +49,8 @@ Ship.prototype.update = function() {
             player.swapControl();
         }
         this.destroy();
+        this.healthBar.destroy();
+        this.healthBarRed.destroy();
         return;
     }
     if(hijackShip) {
