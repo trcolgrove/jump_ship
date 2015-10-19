@@ -165,6 +165,16 @@ function createShips() {
     map.createFromObjects('enemies', 89,
        'destroyer', 2, true, true, ships, Ship, true);
 
+    ships.forEach(function(ship, index, group) {
+        
+        console.log(ship);
+
+        healthBar = new HealthBar(game, ship);
+        game.add.existing(healthBar);
+
+        healthBarRed = new HealthBarRed(game, healthBar);
+        game.add.existing(healthBarRed);
+    });
 }
 
 function createAsteroids() {

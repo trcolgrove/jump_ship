@@ -1,5 +1,6 @@
 function Ship(game, x, y, key, frame) {
     this.game = game;
+    this.maxHealth = 50;
     this.health = 50;
     this.shipHeight = 60;
 
