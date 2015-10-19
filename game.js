@@ -22,6 +22,7 @@ function preload() {
     game.load.spritesheet('explosion1', 'assets/sprites/explosion.png', 96, 96);
     game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png');
     game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav');
+    game.load.image("health_bar_green", "assets/sprites/health_bar_green.png");
     game.state.add("GameOver", gameOver);
 }
 
@@ -63,8 +64,8 @@ function create() {
     player.scale.set(.75,.75);
     game.camera.follow(player);
 
-    // healthbar = new HealthBar(game, player, 50, 50, 100, 8);
-    // game.add.sprite(50, 50, healthbar.bar);
+    healthbar = new HealthBar(game, player, 50, 50);
+    game.add.existing(healthbar);
 
     explosion_gen = new Explosions(game);
 
