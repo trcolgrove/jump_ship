@@ -27,7 +27,7 @@ Comet.prototype.kill = function() {
     this.alive = false;
     this.game.time.events.add(800, function() {
         music.stop();
-        this.game.state.start("TheGame", true, false, "level2");
+        this.game.state.start("GameOver");
 
         //this.game.state.start("GameOver", true, false);
     });

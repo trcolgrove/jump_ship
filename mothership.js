@@ -18,3 +18,11 @@ MotherShip.prototype.shoot = function() {
         game.physics.arcade.velocityFromAngle(angle, 500, laser.body.velocity);
     }
 }
+
+MotherShip.prototype.kill = function() {
+    this.alive = false;
+    explosion_gen.explode(this.x, this.y, 700, 700);
+    this.destroy();
+    this.healthBar.destroy();
+    this.healthBarRed.destroy();
+}
