@@ -23,6 +23,8 @@ function preload() {
     game.load.spritesheet('explosion1', 'assets/sprites/explosion.png', 96, 96);
     game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png');
     game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav');
+    game.load.image("health_bar_green", "assets/sprites/health_bar_green.png");
+    game.load.image("health_bar_red", "assets/sprites/health_bar_red.png");
     game.state.add("GameOver", gameOver);
 }
 
@@ -62,6 +64,13 @@ function create() {
     game.add.existing(player);
     player.scale.set(.75,.75);
     game.camera.follow(player);
+
+    healthBar = new HealthBar(game, player);
+    game.add.existing(healthBar);
+
+    healthBarRed = new HealthBarRed(game, healthBar, player);
+    game.add.existing(healthBarRed);
+
     explosion_gen = new Explosions(game);
 
     //shipFactory = new Ships(game);
@@ -154,7 +163,7 @@ function createShips() {
     map.createFromObjects('enemies', 86,
        'ship', 2, true, true, ships, BlazerShip, false);
     map.createFromObjects('enemies', 89,
-       'destroyer', 2, true, true, ships, BlazerShip, false);
+        'destroyer', 2, true, true, ships, Ship, true);
 
 }
 

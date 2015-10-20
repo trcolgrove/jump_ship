@@ -1,5 +1,6 @@
 function Ship(game, x, y, key, frame) {
     this.game = game;
+    this.maxHealth = 50;
     this.startTime = game.time.now;
     this.health = 50;
     this.shipHeight = 60;
@@ -26,6 +27,12 @@ function Ship(game, x, y, key, frame) {
     } else if(key == "destroyer") {
         this.laserSprite = 'green_laser';
     }
+
+    this.healthBar = new HealthBar(game, this);
+    game.add.existing(this.healthBar);
+
+    this.healthBarRed = new HealthBarRed(game, this.healthBar, this);
+    game.add.existing(this.healthBarRed);
 }
 
 Ship.prototype = Object.create(Phaser.Sprite.prototype);
@@ -62,18 +69,12 @@ Ship.prototype.updatePosition = function() {
 
     if(this.origin == null) {
         this.origin = {x: this.x, y: this.y};
-        console.log("origin: " + this.origin.y);
-        console.log(this.targetPosition);
         this.pathIndx = 0;
         this.targetPosition.x = this.origin.x;
         this.targetPosition.y = this.origin.y;
-        console.log("path:" + this.path[1].y);
-        console.log("target" + this.targetPosition.y);
     }
 
     if(this.position.distance(this.targetPosition) <= 100) {
-        //console.log("asdfasdf");
-        console.log(this.targetPosition);
         this.targetPosition.x = this.path[this.pathIndx].x + this.origin.x;
         this.targetPosition.y = this.path[this.pathIndx].y + this.origin.y;
 

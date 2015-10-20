@@ -6,7 +6,6 @@ Comet = function(game) {
   this.anchor.setTo(.5, .5);
   this.health = 100;
   this.numJumps = 0;
-  this.isLeft = false;
   this.cursors = game.input.keyboard.createCursorKeys();
   this.MAX_JUMPS = 2;
 
@@ -31,9 +30,9 @@ Comet.prototype.update = function() {
         this.game.state.start("GameOver", true, false);
     }
     if(this.health <= 0) {
-        /*
+
         explosion_gen.explode(this.x, this.y, this.height, this.height);
-        this.game.state.start("GameOver", true, false);*/
+        this.game.state.start("GameOver", true, false);
     }
     if(this.ship != null) {
     this.ship.move();
@@ -51,10 +50,10 @@ Comet.prototype.shoot = function() {
       y = this.position.y - (this.height/2.7);
       laser = lasers.create(x, y, 'red_laser');
       laser.scale.set(.75,.75);
-        if(this.isLeft == false) {
+        if(this.scale.x > 0) {
             laser.body.velocity.x = 800;
         }
-        else if(this.isLeft == true) {
+        else if(this.scale.x < 0) {
             laser.body.velocity.x = -800;
             laser.scale.x *= -1;
         }
@@ -101,12 +100,11 @@ Comet.prototype.move = function() {
 
   if (controls.left.isDown)
   {
+      this.body.offset.x = 10
       //  Move to the left
-      if(this.isLeft == false) {
-        this.body.offset.x = 10
+      if(this.scale.x > 0) {
         this.scale.x *= -1;
       }
-      this.isLeft = true
       this.body.velocity.x = -150 * sprint;
       if(this.body.touching.down ||  this.body.blocked.down) {
         this.animations.play('walk');
@@ -120,10 +118,9 @@ Comet.prototype.move = function() {
       this.body.offset.x = -10
 
       //  Move to the right
-      if(this.isLeft == true) {
+      if(this.scale.x < 0) {
         this.scale.x *= -1;
       }
-      this.isLeft = false;
       this.body.velocity.x = 150 * sprint;
       if(this.body.touching.down || this.body.blocked.down) {
         this.animations.play('walk');
@@ -135,9 +132,6 @@ Comet.prototype.move = function() {
   else
   {
       this.frame = 4;
-      if(this.isLeft == true) {
-        this.scale.x *= -1;
-      }
   }
 
   if ((controls.up.isDown) && this.numJumps < this.MAX_JUMPS) {
