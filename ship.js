@@ -31,20 +31,25 @@ function Ship(game, x, y, key, frame) {
 Ship.prototype = Object.create(Phaser.Sprite.prototype);
 Ship.prototype.constructor = Ship;
 
+Ship.prototype.kill = function() {
+    this.alive = false;
+    explosion_gen.explode(this.x, this.y, 250, 250);
+    this.destroy();
+    this.healthBar.destroy();
+    this.healthBarRed.destroy();
+}
+
 Ship.prototype.update = function() {
 
     if(this.alive == false && this.y >= (this.game.height - 30)) {
-        explosion_gen.explode(this.x, this.y, 250, 250);
-        this.destroy();
+        this.kill();
     }
-    if(this.health <= 0) {
-        this.alive = false;
-        explosion_gen.explode(this.x, this.y, 250, 250);
+    else if(this.health <= 0) {
         if(this.userControlled) {
             this.swapControl();
             player.swapControl();
         }
-        this.destroy();
+        this.kill();
         return;
     }
 
