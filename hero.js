@@ -24,7 +24,8 @@ Comet.prototype.constructor = Comet;
 Comet.prototype.kill = function() {
     explosion_gen.explode(this.x, this.y, 250, 250);
     visible = false;
-    this.game.time.events.add(3000, function() {
+    this.alive = false;
+    this.game.time.events.add(800, function() {
         this.game.state.start("GameOver", true, false);
     });
 }
@@ -32,7 +33,9 @@ Comet.prototype.kill = function() {
 Comet.prototype.update = function() {
 
     if(this.y >= (this.game.height - 30) || this.health <= 0) {
-        this.kill();
+        if(this.alive == true) {
+            this.kill();
+        }
     }
 
     if(this.ship != null) {
