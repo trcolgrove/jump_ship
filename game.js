@@ -220,9 +220,11 @@ gameState.update = function() {
     //shipFactory.update();
     ships.update();
 
-    game.physics.arcade.collide(ships, lasers, function(ship, laser){
-        ship.hit(10);
-        laser.destroy();
+    game.physics.arcade.overlap(ships, lasers, function(ship, laser){
+        if(ship.userControlled != laser.friendly){
+            ship.hit(10);
+            laser.destroy();
+        }
     });
     game.physics.arcade.collide(player, lasers, function(player, laser) {
         player.hit(10);

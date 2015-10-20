@@ -134,10 +134,13 @@ Ship.prototype.swapControl = function() {
 }
 
 Ship.prototype.shoot = function() {
+    var friendly = this.userControlled;
+    var x = this.position.x;
+    var y = this.position.y;
     ship_laser_sound.play();
-    x = this.position.x;
-    y = this.position.y;
-    laser = lasers.create(x, y, this.laserSprite);
+    laser = new Laser(this.game, x, y, this.laserSprite, friendly);
+    game.add.existing(laser);
+    lasers.add(laser);
     laser.scale.set(.75,.75);
     if(this.userControlled) {
         laser.body.velocity.x = 800;

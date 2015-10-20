@@ -1,9 +1,8 @@
-function Laser(game, x, y, key, friendly, power) {
+function Laser(game, x, y, key, friendly) {
     this.game = game;
     this.friendly = friendly;
     Phaser.Sprite.call(this, game, x, y, key);
-    this.power = power;
 }
 
-Ship.prototype = Object.create(Phaser.Sprite.prototype);
-Ship.prototype.constructor = Ship;
+Laser.prototype = Object.create(Phaser.Sprite.prototype);
+Laser.prototype.constructor = Laser;
