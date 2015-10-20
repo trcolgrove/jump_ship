@@ -16,6 +16,7 @@ function preload() {
     game.load.spritesheet('asteroids', 'assets/sprites/asteroids.png', 256, 256)
     game.load.spritesheet('comet_hero', 'assets/sprites/comet_spritesheet.png', 61, 86.25);
     game.load.audio('ultra', ['assets/music/ultra.mp3']);
+    game.load.audio('level1_music', ['assets/music/level1.mp3']);
     game.load.audio('laser_sound', 'assets/sfx/laser_shoot.wav');
     game.load.audio('boom_sound', 'assets/sfx/explosion.wav');
     game.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -38,7 +39,6 @@ var hijackShip = null;
 var collidingShip = null;
 var particles;
 var explosion_gen;
-
 
 
 function create() {
@@ -68,13 +68,13 @@ function create() {
     healthBar = new HealthBar(game, player);
     game.add.existing(healthBar);
 
-    healthBarRed = new HealthBarRed(game, healthBar);
+    healthBarRed = new HealthBarRed(game, healthBar, player);
     game.add.existing(healthBarRed);
 
     explosion_gen = new Explosions(game);
 
-    shipFactory = new Ships(game);
-    shipFactory.create();
+    //shipFactory = new Ships(game);
+    //shipFactory.create();
 
     lasers = game.add.group();
     lasers.enableBody = true;
@@ -85,8 +85,8 @@ function create() {
     game.world.bringToTop(player);
     game.world.bringToTop(lasers);
 
-    //music.play();
     music.loop = true;
+    music.play();
 }
 
 function setControls() {
@@ -150,7 +150,7 @@ function initTileMap() {
 }
 
 function initGameAudio() {
-    music = game.add.audio('ultra');
+    music = game.add.audio('level1_music');
     boom_sound = game.add.audio('boom_sound');
     laser_sound = game.add.audio('laser_sound');
     ship_laser_sound = game.add.audio('ship_laser_sound');
@@ -161,9 +161,10 @@ function createShips() {
     ships.enableBody = true;
     result = findObjectsByType('ship', map, 'enemies');
     map.createFromObjects('enemies', 86,
-       'ship', 2, true, true, ships, Ship, true);
+       'ship', 2, true, true, ships, BlazerShip, false);
     map.createFromObjects('enemies', 89,
-       'destroyer', 2, true, true, ships, Ship, true);
+        'destroyer', 2, true, true, ships, Ship, true);
+
 }
 
 function createAsteroids() {
@@ -216,7 +217,7 @@ function update() {
     game.physics.arcade.collide(player, thinLayer);
 
     player.update();
-    shipFactory.update();
+    //shipFactory.update();
     ships.update();
 
     game.physics.arcade.collide(ships, lasers, function(ship, laser){
@@ -228,6 +229,7 @@ function update() {
         laser.destroy();
     });
     enemyFire();
+    updateEnemyPositions();
 }
 
 function enemyFire() {
@@ -240,4 +242,10 @@ function enemyFire() {
          enemy.nextShotAt = game.time.now + (Math.random()*2000)%2000;
        }
     }, this);
+}
+
+function updateEnemyPositions() {
+    ships.forEachAlive(function (enemy) {
+        enemy.updatePosition();
+    });
 }

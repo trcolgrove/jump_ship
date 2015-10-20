@@ -1,14 +1,16 @@
 function Ship(game, x, y, key, frame) {
     this.game = game;
     this.maxHealth = 50;
+    this.startTime = game.time.now;
     this.health = 50;
     this.shipHeight = 60;
-
+    //this.path = [{x: 0, y: 0}];
+    this.pathIndx = 0;
     this.nextShotAt = game.time.now + 5;
-
+    this.origin = null;
+    this.targetPosition = {x: x, y: y};
     Phaser.Sprite.call(this, game, x, y, key);
     this.game.physics.arcade.enable(this);
-
     this.frame = frame; //set the ship to enemy contolled frame
     this.anchor.setTo(.5, .5);
     this.enableBody = true;
@@ -29,37 +31,61 @@ function Ship(game, x, y, key, frame) {
     this.healthBar = new HealthBar(game, this);
     game.add.existing(this.healthBar);
 
-    this.healthBarRed = new HealthBarRed(game, this.healthBar);
+    this.healthBarRed = new HealthBarRed(game, this.healthBar, this);
     game.add.existing(this.healthBarRed);
 }
 
 Ship.prototype = Object.create(Phaser.Sprite.prototype);
 Ship.prototype.constructor = Ship;
 
+Ship.prototype.kill = function() {
+    this.alive = false;
+    explosion_gen.explode(this.x, this.y, 250, 250);
+    this.destroy();
+    this.healthBar.destroy();
+    this.healthBarRed.destroy();
+}
+
 Ship.prototype.update = function() {
+
     if(this.alive == false && this.y >= (this.game.height - 30)) {
-        explosion_gen.explode(this.x, this.y, 250, 250);
-        this.destroy();
+        this.kill();
     }
-    if(this.health <= 0) {
-        this.alive = false;
-        explosion_gen.explode(this.x, this.y, 250, 250);
+    else if(this.health <= 0) {
         if(this.userControlled) {
             this.swapControl();
             player.swapControl();
         }
-        this.destroy();
-        this.healthBar.destroy();
-        this.healthBarRed.destroy();
+        this.kill();
         return;
     }
-    if(hijackShip) {
-        x = this.x;
-        y = hijackShip.y;
+
+    if(game.time.now - this.startTime > 1000) {
+        this.updatePosition();
     }
-    else if(player) {
-        x = this.x;
-        y = player.y;
+}
+
+Ship.prototype.updatePosition = function() {
+
+    if(this.origin == null) {
+        this.origin = {x: this.x, y: this.y};
+        this.pathIndx = 0;
+        this.targetPosition.x = this.origin.x;
+        this.targetPosition.y = this.origin.y;
+    }
+
+    if(this.position.distance(this.targetPosition) <= 100) {
+        this.targetPosition.x = this.path[this.pathIndx].x + this.origin.x;
+        this.targetPosition.y = this.path[this.pathIndx].y + this.origin.y;
+
+        this.pathIndx = (this.pathIndx + 1) % this.path.length;
+
+        this.game.physics.arcade.moveToObject(
+            this,
+            this.targetPosition,
+            50,
+            null
+        );
     }
 }
 
