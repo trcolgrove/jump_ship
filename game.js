@@ -42,7 +42,6 @@ var explosion_gen;
 
 
 gameState.create = function() {
-
     gameState.setControls();
 
     //  We're going to be using physics, so enable the Arcade Physics system
