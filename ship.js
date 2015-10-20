@@ -68,6 +68,7 @@ Ship.prototype.update = function() {
 Ship.prototype.updatePosition = function() {
 
     if(this.origin == null) {
+        this.y += 50;
         this.origin = {x: this.x, y: this.y};
         this.pathIndx = 0;
         this.targetPosition.x = this.origin.x;

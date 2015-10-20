@@ -162,7 +162,7 @@ gameState.createShips = function() {
     map.createFromObjects('enemies', 86,
        'ship', 2, true, true, ships, BlazerShip, false);
     map.createFromObjects('enemies', 89,
-        'destroyer', 2, true, true, ships, Ship, true);
+        'destroyer', 2, true, true, ships, Ship, false);
 
 }
 
