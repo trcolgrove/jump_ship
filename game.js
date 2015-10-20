@@ -68,7 +68,7 @@ function create() {
     healthBar = new HealthBar(game, player);
     game.add.existing(healthBar);
 
-    healthBarRed = new HealthBarRed(game, healthBar);
+    healthBarRed = new HealthBarRed(game, healthBar, player);
     game.add.existing(healthBarRed);
 
     explosion_gen = new Explosions(game);

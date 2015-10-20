@@ -31,7 +31,7 @@ function Ship(game, x, y, key, frame) {
     this.healthBar = new HealthBar(game, this);
     game.add.existing(this.healthBar);
 
-    this.healthBarRed = new HealthBarRed(game, this.healthBar);
+    this.healthBarRed = new HealthBarRed(game, this.healthBar, this);
     game.add.existing(this.healthBarRed);
 }
 
