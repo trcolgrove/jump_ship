@@ -225,6 +225,7 @@ gameState.update = function() {
     if(player.x > 8000 || (hijackShip && hijackShip.x > 8000)) {
         if(this.levelData == 'level1') {
             music.stop();
+            hijackShip = null;
             player.x = 10;
             game.state.start("TheGame", true, false, "level2");
         } else if (this.levelData == 'level2') {
