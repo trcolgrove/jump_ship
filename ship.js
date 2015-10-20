@@ -1,13 +1,15 @@
 function Ship(game, x, y, key, frame) {
     this.game = game;
+    this.startTime = game.time.now;
     this.health = 50;
     this.shipHeight = 60;
-
+    //this.path = [{x: 0, y: 0}];
+    this.pathIndx = 0;
     this.nextShotAt = game.time.now + 5;
-
+    this.origin = null;
+    this.targetPosition = {x: x, y: y};
     Phaser.Sprite.call(this, game, x, y, key);
     this.game.physics.arcade.enable(this);
-
     this.frame = frame; //set the ship to enemy contolled frame
     this.anchor.setTo(.5, .5);
     this.enableBody = true;
@@ -30,6 +32,7 @@ Ship.prototype = Object.create(Phaser.Sprite.prototype);
 Ship.prototype.constructor = Ship;
 
 Ship.prototype.update = function() {
+
     if(this.alive == false && this.y >= (this.game.height - 30)) {
         explosion_gen.explode(this.x, this.y, 250, 250);
         this.destroy();
@@ -44,13 +47,39 @@ Ship.prototype.update = function() {
         this.destroy();
         return;
     }
-    if(hijackShip) {
-        x = this.x;
-        y = hijackShip.y;
+
+    if(game.time.now - this.startTime > 1000) {
+        this.updatePosition();
     }
-    else if(player) {
-        x = this.x;
-        y = player.y;
+}
+
+Ship.prototype.updatePosition = function() {
+
+    if(this.origin == null) {
+        this.origin = {x: this.x, y: this.y};
+        console.log("origin: " + this.origin.y);
+        console.log(this.targetPosition);
+        this.pathIndx = 0;
+        this.targetPosition.x = this.origin.x;
+        this.targetPosition.y = this.origin.y;
+        console.log("path:" + this.path[1].y);
+        console.log("target" + this.targetPosition.y);
+    }
+
+    if(this.position.distance(this.targetPosition) <= 100) {
+        //console.log("asdfasdf");
+        console.log(this.targetPosition);
+        this.targetPosition.x = this.path[this.pathIndx].x + this.origin.x;
+        this.targetPosition.y = this.path[this.pathIndx].y + this.origin.y;
+
+        this.pathIndx = (this.pathIndx + 1) % this.path.length;
+
+        this.game.physics.arcade.moveToObject(
+            this,
+            this.targetPosition,
+            50,
+            null
+        );
     }
 }
 
