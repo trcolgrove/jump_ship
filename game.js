@@ -208,6 +208,8 @@ function createFromTiledObject(element, group) {
 }
 
 function update() {
+    background.x = game.camera.x;
+
     collidingShip = null;
     explosion_gen.update();
     game.physics.arcade.collide(player, ships, function(p, ship){
