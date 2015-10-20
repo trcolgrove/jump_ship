@@ -53,7 +53,9 @@ Comet.prototype.shoot = function() {
       laser_sound.play();
       x = this.position.x;
       y = this.position.y - (this.height/2.7);
-      laser = lasers.create(x, y, 'red_laser');
+      laser = new Laser(this.game, x, y, 'red_laser', true);
+      game.add.existing(laser);
+      lasers.add(laser);
       laser.scale.set(.75,.75);
         if(this.scale.x > 0) {
             laser.body.velocity.x = 800;
