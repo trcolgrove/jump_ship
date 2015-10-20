@@ -60,7 +60,7 @@ Ship.prototype.update = function() {
         return;
     }
 
-    if(game.time.now - this.startTime > 1000) {
+    if(game.time.now - this.startTime > 1000 && !this.userControlled) {
         this.updatePosition();
     }
 }

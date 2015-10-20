@@ -23,7 +23,7 @@ Comet.prototype.constructor = Comet;
 
 Comet.prototype.kill = function() {
     explosion_gen.explode(this.x, this.y, 250, 250);
-    visible = false;
+    this.visible = false;
     this.alive = false;
     this.game.time.events.add(800, function() {
         music.stop();

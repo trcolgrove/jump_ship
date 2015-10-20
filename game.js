@@ -160,7 +160,7 @@ gameState.createShips = function() {
     ships.enableBody = true;
     result = this.findObjectsByType('ship', map, 'enemies');
     map.createFromObjects('enemies', 86,
-       'ship', 2, true, true, ships, BlazerShip, false);
+       'ship', 2, true, true, ships, Ship, false);
     map.createFromObjects('enemies', 89,
         'destroyer', 2, true, true, ships, Ship, false);
 
