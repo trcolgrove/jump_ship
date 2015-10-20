@@ -1,5 +1,6 @@
 function Ship(game, x, y, key, frame) {
     this.game = game;
+    this.autoCull = true;
     this.maxHealth = 50;
     this.startTime = game.time.now;
     this.health = 50;
