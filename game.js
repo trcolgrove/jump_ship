@@ -1,8 +1,9 @@
-var game = new Phaser.Game(800, 574, Phaser.AUTO, '', { preload: preload,
-                          create: create, update: update});
-var audio;
+var game = new Phaser.Game(800, 574, Phaser.AUTO, '');
 
-function preload() {
+var audio;
+var gameState = {};
+
+gameState.preload = function() {
     game.load.image('sky', 'assets/images/space-2.png');
     game.load.spritesheet("ship", "assets/sprites/sport_ship.png", 200, 58);
     game.load.spritesheet("destroyer", "assets/sprites/destroyer.png", 200, 58);
@@ -25,7 +26,6 @@ function preload() {
     game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav');
     game.load.image("health_bar_green", "assets/sprites/health_bar_green.png");
     game.load.image("health_bar_red", "assets/sprites/health_bar_red.png");
-    game.state.add("GameOver", gameOver);
 }
 
 var music;
@@ -41,9 +41,9 @@ var particles;
 var explosion_gen;
 
 
-function create() {
+gameState.create = function() {
 
-    setControls();
+    gameState.setControls();
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -52,8 +52,8 @@ function create() {
 
     particles = game.add.group();
 
-    initGameAudio();
-    initTileMap();
+    this.initGameAudio();
+    this.initTileMap();
 
     //enable physics for tile layers
     thinLayer.enableBody = true;
@@ -89,7 +89,7 @@ function create() {
     music.play();
 }
 
-function setControls() {
+gameState.setControls = function() {
 
     controls = {
       up: game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -118,7 +118,7 @@ function setControls() {
 }
 
 
-function initTileMap() {
+gameState.initTileMap = function() {
     map = game.add.tilemap('level1');
 
     map.addTilesetImage('platforms','platformTiles');
@@ -132,8 +132,8 @@ function initTileMap() {
 
     doors = map.createLayer('door_layer');
 
-    createAsteroids();
-    createShips();
+    this.createAsteroids();
+    this.createShips();
     //enable tile map collisions
     thinLayer.getTiles(0, 0, game.world.width, game.world.height).forEach(
         function(tile) {
@@ -149,17 +149,17 @@ function initTileMap() {
 
 }
 
-function initGameAudio() {
+gameState.initGameAudio = function() {
     music = game.add.audio('level1_music');
     boom_sound = game.add.audio('boom_sound');
     laser_sound = game.add.audio('laser_sound');
     ship_laser_sound = game.add.audio('ship_laser_sound');
 }
 
-function createShips() {
+gameState.createShips = function() {
     ships = game.add.group();
     ships.enableBody = true;
-    result = findObjectsByType('ship', map, 'enemies');
+    result = this.findObjectsByType('ship', map, 'enemies');
     map.createFromObjects('enemies', 86,
        'ship', 2, true, true, ships, BlazerShip, false);
     map.createFromObjects('enemies', 89,
@@ -167,13 +167,13 @@ function createShips() {
 
 }
 
-function createAsteroids() {
+gameState.createAsteroids = function() {
   //create doors
 
   asteroids = game.add.group();
   asteroids.enableBody = true;
   var i = 0
-  result = findObjectsByType('asteroid', map, 'asteroid_layer');
+  result = this.findObjectsByType('asteroid', map, 'asteroid_layer');
   result.forEach(function(element) {
      asteroid_sprite = map.createFromObjects('asteroid_layer', element.gid,
      'asteroids', i, true, true, asteroids, Phaser.Sprite, true);
@@ -183,7 +183,7 @@ function createAsteroids() {
 }
 
 
-function findObjectsByType(type, map, layer) {
+gameState.findObjectsByType = function(type, map, layer) {
   var result = new Array();
   map.objects[layer].forEach(function(element){
 
@@ -199,7 +199,7 @@ function findObjectsByType(type, map, layer) {
   return result;
 }
 
-function createFromTiledObject(element, group) {
+gameState.createFromTiledObject = function(element, group) {
   var sprite = group.create(element.x, element.y, element.properties.sprite);
     //copy all properties to the sprite
     Object.keys(element.properties).forEach(function(key){
@@ -207,7 +207,7 @@ function createFromTiledObject(element, group) {
     });
 }
 
-function update() {
+gameState.update = function() {
     collidingShip = null;
     explosion_gen.update();
     game.physics.arcade.collide(player, ships, function(p, ship){
@@ -228,12 +228,12 @@ function update() {
         player.hit(10);
         laser.destroy();
     });
-    enemyFire();
-    updateEnemyPositions();
+    this.enemyFire();
+    this.updateEnemyPositions();
 }
 
-function enemyFire() {
-    ships.forEachAlive(function (enemy) {
+gameState.enemyFire = function() {
+    ships.forEachAlive(function(enemy) {
       if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
          if(enemy.position.distance(player) <= 800 ||
          (hijackShip != null && enemy.position.distance(hijackShip) <= 800)) {
@@ -244,8 +244,14 @@ function enemyFire() {
     }, this);
 }
 
-function updateEnemyPositions() {
+gameState.updateEnemyPositions = function() {
     ships.forEachAlive(function (enemy) {
         enemy.updatePosition();
     });
 }
+
+game.state.add("StartScreen", startScreen);
+game.state.add("TheGame", gameState);
+game.state.add("GameOver", gameOver);
+
+game.state.start("StartScreen");
