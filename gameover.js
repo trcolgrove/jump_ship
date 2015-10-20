@@ -11,10 +11,10 @@ gameOver.prototype = {
         var spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         spaceBar.onDown.add(function(spaceBar) {
-            game.state.start("TheGame");
+            game.state.start("TheGame",true, false, "level1");
         });
 	},
 	playTheGame: function(){
-		this.game.state.start("TheGame", true, false, "level2");
+		this.game.state.start("TheGame", true, false, "level1");
 	}
 }

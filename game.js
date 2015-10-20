@@ -178,7 +178,9 @@ gameState.createShips = function() {
 
     map.createFromObjects('enemies', 92,
         'mothership', 2, true, true, bosses, MotherShip, true);
-
+    bosses.forEachAlive(function(boss) {
+        boss.y += 150;
+    });
 }
 
 gameState.createAsteroids = function() {
