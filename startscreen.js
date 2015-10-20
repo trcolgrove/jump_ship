@@ -8,11 +8,8 @@ var startScreen = {
 
         var startScreenSprite = game.add.sprite(0, 0, "start_screen");
         var spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
         spaceBar.onDown.add(function(spaceBar) {
-            game.state.start("TheGame");
+            game.state.start("TheGame", true, false, "level1");
         });
-
     }
-
 }

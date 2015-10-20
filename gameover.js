@@ -15,6 +15,6 @@ gameOver.prototype = {
         });
 	},
 	playTheGame: function(){
-		this.game.state.start("TheGame");
+		this.game.state.start("TheGame", true, false, "level2");
 	}
 }

@@ -5,6 +5,7 @@ var gameState = {};
 
 gameState.preload = function() {
     game.load.image('sky', 'assets/images/space-2.png');
+    game.load.image('nebula', 'assets/images/space-3.jpg');
     game.load.spritesheet("ship", "assets/sprites/sport_ship.png", 200, 58);
     game.load.spritesheet("destroyer", "assets/sprites/destroyer.png", 200, 58);
     game.load.image("doors", "assets/sprites/doors.png");
@@ -21,11 +22,13 @@ gameState.preload = function() {
     game.load.audio('laser_sound', 'assets/sfx/laser_shoot.wav');
     game.load.audio('boom_sound', 'assets/sfx/explosion.wav');
     game.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('level2', 'assets/tilemaps/level2.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('explosion1', 'assets/sprites/explosion.png', 96, 96);
     game.load.spritesheet('smoke_particle', 'assets/sprites/smokeparticle.png');
     game.load.audio('ship_laser_sound', 'assets/sfx/ship_laser.wav');
     game.load.image("health_bar_green", "assets/sprites/health_bar_green.png");
     game.load.image("health_bar_red", "assets/sprites/health_bar_red.png");
+    game.load.image("mothership", "assets/sprites/mothership.png")
 }
 
 var music;
@@ -40,6 +43,9 @@ var collidingShip = null;
 var particles;
 var explosion_gen;
 
+gameState.init = function(levelData) {
+    this.levelData = levelData;
+}
 
 gameState.create = function() {
     gameState.setControls();
@@ -47,7 +53,12 @@ gameState.create = function() {
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 10000, game.world.height);
-    background = game.add.tileSprite(0, 0, 2400, game.world.height, 'sky');
+
+    if(this.levelData == "level2") {
+        background = game.add.tileSprite(0, 0, 2400, game.world.height, 'nebula');
+    } else {
+        background = game.add.tileSprite(0, 0, 2400, game.world.height, 'sky');
+    }
 
     particles = game.add.group();
 
@@ -118,7 +129,7 @@ gameState.setControls = function() {
 
 
 gameState.initTileMap = function() {
-    map = game.add.tilemap('level1');
+    map = game.add.tilemap(this.levelData);
 
     map.addTilesetImage('platforms','platformTiles');
     map.addTilesetImage('doors', 'doors');
@@ -157,12 +168,16 @@ gameState.initGameAudio = function() {
 
 gameState.createShips = function() {
     ships = game.add.group();
+    bosses = game.add.group();
     ships.enableBody = true;
     result = this.findObjectsByType('ship', map, 'enemies');
     map.createFromObjects('enemies', 86,
        'ship', 2, true, true, ships, Ship, false);
     map.createFromObjects('enemies', 89,
         'destroyer', 2, true, true, ships, Ship, false);
+
+    map.createFromObjects('enemies', 92,
+        'mothership', 2, true, true, bosses, MotherShip, true);
 
 }
 
@@ -207,6 +222,16 @@ gameState.createFromTiledObject = function(element, group) {
 }
 
 gameState.update = function() {
+    if(player.x > 8000 || (hijackShip && hijackShip.x > 8000)) {
+        if(this.levelData == 'level1') {
+            music.stop();
+            player.x = 10;
+            game.state.start("TheGame", true, false, "level2");
+        } else if (this.levelData == 'level2') {
+            music.stop();
+            game.state.start("Victory");
+        }
+    }
     background.x = game.camera.x;
     collidingShip = null;
     explosion_gen.update();
@@ -226,6 +251,12 @@ gameState.update = function() {
             laser.destroy();
         }
     });
+    game.physics.arcade.overlap(bosses, lasers, function(boss, laser){
+        if(laser.friendly){
+            boss.hit(laser.power);
+            laser.destroy();
+        }
+    });
     game.physics.arcade.collide(player, lasers, function(player, laser) {
         player.hit(laser.power);
         laser.destroy();
@@ -235,15 +266,18 @@ gameState.update = function() {
 }
 
 gameState.enemyFire = function() {
-    ships.forEachAlive(function(enemy) {
-      if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
-         if(enemy.position.distance(player) <= 800 ||
-         (hijackShip != null && enemy.position.distance(hijackShip) <= 800)) {
-             enemy.shoot();
-         }
-         enemy.nextShotAt = game.time.now + (Math.random()*2000)%2000;
+    ships.forEachAlive(shootAtPlayer, this);
+    bosses.forEachAlive(shootAtPlayer, this);
+}
+
+function shootAtPlayer(enemy) {
+    if (game.time.now > enemy.nextShotAt && !enemy.userControlled) {
+       if(enemy.position.distance(player) <= 800 ||
+       (hijackShip != null && enemy.position.distance(hijackShip) <= 800)) {
+           enemy.shoot();
        }
-    }, this);
+       enemy.nextShotAt = game.time.now + (Math.random()*2000)%2000;
+     }
 }
 
 gameState.updateEnemyPositions = function() {
@@ -255,5 +289,5 @@ gameState.updateEnemyPositions = function() {
 game.state.add("StartScreen", startScreen);
 game.state.add("TheGame", gameState);
 game.state.add("GameOver", gameOver);
-
+game.state.add("Victory", victoryScreen);
 game.state.start("StartScreen");

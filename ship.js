@@ -5,7 +5,7 @@ function Ship(game, x, y, key, frame) {
     this.startTime = game.time.now;
     this.health = 50;
     this.shipHeight = 60;
-    //this.path = [{x: 0, y: 0}];
+    this.path = [{x: 0, y: 0}];
     this.pathIndx = 0;
     this.nextShotAt = game.time.now + 5;
     this.origin = null;

@@ -27,16 +27,20 @@ Comet.prototype.kill = function() {
     this.alive = false;
     this.game.time.events.add(800, function() {
         music.stop();
-        this.game.state.start("GameOver", true, false);
+        this.game.state.start("TheGame", true, false, "level2");
+
+        //this.game.state.start("GameOver", true, false);
     });
 }
 
 Comet.prototype.update = function() {
 
     if(this.y >= (this.game.height - 30) || this.health <= 0) {
+
         if(this.alive == true) {
             this.kill();
         }
+
     }
 
     if(this.ship != null) {
