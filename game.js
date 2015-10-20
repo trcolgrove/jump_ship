@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 574, Phaser.AUTO, '');
+var game = new Phaser.Game(800, 574, Phaser.AUTO, 'the_game');
 
 var audio;
 var gameState = {};
