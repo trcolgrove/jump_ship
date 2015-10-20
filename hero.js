@@ -21,19 +21,20 @@ Comet = function(game) {
 Comet.prototype = Object.create(Phaser.Sprite.prototype)
 Comet.prototype.constructor = Comet;
 
+Comet.prototype.kill = function() {
+    explosion_gen.explode(this.x, this.y, 250, 250);
+    visible = false;
+    this.game.time.events.add(3000, function() {
+        this.game.state.start("GameOver", true, false);
+    });
+}
 
 Comet.prototype.update = function() {
 
-    if(this.y >= (this.game.height - 30)) {
-        explosion_gen.explode(this.x, this.y, 250, 250);
-        visible = false;
-        this.game.state.start("GameOver", true, false);
+    if(this.y >= (this.game.height - 30) || this.health <= 0) {
+        this.kill();
     }
-    if(this.health <= 0) {
 
-        explosion_gen.explode(this.x, this.y, this.height, this.height);
-        this.game.state.start("GameOver", true, false);
-    }
     if(this.ship != null) {
     this.ship.move();
     } else {
