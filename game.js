@@ -116,7 +116,7 @@ gameState.setControls = function() {
             hijackShip = collidingShip;
             player.swapControl(hijackShip);
             hijackShip.swapControl();
-        } else if (hijackShip != null){
+        } else if (hijackShip != null && player.ship != null){
             player.ship.swapControl(hijackShip);
             player.swapControl(hijackShip);
             hijackShip = null;
